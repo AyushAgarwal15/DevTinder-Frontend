@@ -54,7 +54,7 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </fieldset>
-          <div className="card-actions justify-end">
+          <div className="card-actions justify-center">
             <button className="btn btn-primary" onClick={handleLogin}>
               Login
             </button>
