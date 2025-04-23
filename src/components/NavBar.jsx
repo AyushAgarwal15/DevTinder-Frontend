@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { removeUser } from "../utils/userSlice";
 import { useToast } from "../context/ToastContext";
+import Logo from "./Logo";
 
 const NavBar = () => {
   const user = useSelector((store) => store.user);
@@ -38,15 +39,7 @@ const NavBar = () => {
   return (
     <div className="sticky top-0 z-30 w-full bg-[#1c2030] border-b border-gray-800 shadow-md transition-all duration-200">
       <div className="navbar max-w-7xl mx-auto px-4">
-        <div className="flex-1">
-          <Link
-            to="/"
-            className="btn btn-ghost gap-2 normal-case text-xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent hover:scale-105 transition-transform duration-200 cursor-pointer"
-          >
-            <span className="text-2xl">💘</span>
-            DevTinder
-          </Link>
-        </div>
+        <Logo />
 
         {user && (
           <div className="hidden md:flex items-center gap-4 mr-6">

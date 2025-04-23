@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Logo from "./Logo";
 
 const Footer = () => {
   return (
@@ -8,15 +9,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between gap-8">
           {/* Left side - Logo and description */}
           <div className="flex flex-col max-w-md">
-            <div className="flex-1">
-              <Link
-                to="/"
-                className="btn btn-ghost gap-2 normal-case text-xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent hover:scale-105 transition-transform duration-200"
-              >
-                <span className="text-2xl">💘</span>
-                DevTinder
-              </Link>
-            </div>
+            <Logo />
 
             <p className="text-gray-400 text-sm md:text-base mb-6 md:mb-0">
               Connect with like-minded developers. DevTinder helps you find the
