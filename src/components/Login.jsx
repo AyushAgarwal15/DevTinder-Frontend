@@ -8,7 +8,7 @@ import { useToast } from "../context/ToastContext";
 import ButtonLoader from "./ButtonLoader";
 
 const Login = () => {
-  const [emailId, setEmail] = useState("guest@gmail.com");
+  const [emailId, setEmail] = useState("guestuser@gmail.com");
   const [password, setPassword] = useState("@Guest.1234");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
