@@ -6,12 +6,26 @@ import { addUserToTheFeed, removeUserFromFeed } from "../utils/feedSlice";
 import UserCard from "./UserCard";
 import { useToast } from "../context/ToastContext";
 import Loader from "./Loader";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Feed = () => {
   const feed = useSelector((store) => store.feed);
   const dispatch = useDispatch();
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(true);
+  const [exitDirection, setExitDirection] = useState(null);
+  const [showGuide, setShowGuide] = useState(true);
+  const [isCardExiting, setIsCardExiting] = useState(false);
+
+  // Auto-hide guide after a few seconds
+  useEffect(() => {
+    if (showGuide) {
+      const timer = setTimeout(() => {
+        setShowGuide(false);
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [showGuide]);
 
   const fetchFeed = async () => {
     if (feed) {
@@ -33,14 +47,25 @@ const Feed = () => {
 
   const handleSendRequest = async (id, status) => {
     try {
-      await axios.post(
-        BASE_URL + `/request/send/${status}/${id}`,
-        {},
-        { withCredentials: true }
-      );
-      dispatch(removeUserFromFeed(id));
-      if (status === "interested") toast.success("Connection request sent!");
-      if (status === "ignored") toast.success("User Ignored!");
+      // Set exit direction for animation
+      setExitDirection(status === "interested" ? "right" : "left");
+      setIsCardExiting(true);
+
+      // Wait for animation and then make API call
+      setTimeout(async () => {
+        await axios.post(
+          BASE_URL + `/request/send/${status}/${id}`,
+          {},
+          { withCredentials: true }
+        );
+        dispatch(removeUserFromFeed(id));
+        if (status === "interested") toast.success("Connection request sent!");
+        if (status === "ignored") toast.success("User Ignored!");
+
+        // Reset exit direction and card exiting state
+        setExitDirection(null);
+        setIsCardExiting(false);
+      }, 300);
     } catch (err) {
       const errorMessage = err?.response?.data || "Failed to accept request";
       toast.error(errorMessage);
@@ -52,6 +77,32 @@ const Feed = () => {
     fetchFeed();
   }, []);
 
+  // Card variants for framer-motion
+  const cardVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
+    exit: (direction) => ({
+      x: direction === "left" ? -500 : direction === "right" ? 500 : 0,
+      opacity: 0,
+      rotate: direction === "left" ? -20 : direction === "right" ? 20 : 0,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    }),
+  };
+
+  // Guide animation to show swiping
+  const guideVariants = {
+    swipeRight: {
+      x: [0, 80, 0],
+      opacity: [0.5, 1, 0.5],
+      transition: { duration: 2, repeat: 1, repeatType: "reverse" },
+    },
+    swipeLeft: {
+      x: [0, -80, 0],
+      opacity: [0.5, 1, 0.5],
+      transition: { duration: 2, repeat: 1, repeatType: "reverse", delay: 4 },
+    },
+  };
+
   return (
     <div className="min-h-screen bg-[#1c2030] py-8 px-4">
       {isLoading ? (
@@ -59,8 +110,116 @@ const Feed = () => {
           <Loader size="large" text="Finding Matches..." />
         </div>
       ) : feed?.length > 0 ? (
-        <div className="flex justify-center my-10">
-          <UserCard user={feed[0]} onHandleSendRequest={handleSendRequest} />
+        <div className="flex justify-center my-10 h-[550px] relative">
+          {/* Visual guide overlay */}
+          {showGuide && (
+            <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center">
+              <div className="relative w-96 h-96 flex items-center justify-center">
+                {/* Right swipe guide */}
+                <motion.div
+                  className="absolute right-[-50px] top-1/2 transform -translate-y-1/2 bg-green-500/80 text-white px-3 py-2 rounded-lg"
+                  variants={guideVariants}
+                  animate="swipeRight"
+                >
+                  <div className="flex items-center gap-1">
+                    <span className="text-sm font-bold">Like</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </motion.div>
+
+                {/* Left swipe guide */}
+                <motion.div
+                  className="absolute left-[-50px] top-1/2 transform -translate-y-1/2 bg-red-500/80 text-white px-3 py-2 rounded-lg"
+                  variants={guideVariants}
+                  animate="swipeLeft"
+                >
+                  <div className="flex items-center gap-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span className="text-sm font-bold">Ignore</span>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          )}
+
+          <AnimatePresence custom={exitDirection}>
+            {/* Properly positioned card stack */}
+            <div className="relative w-96 h-[550px]">
+              {/* Background card first (lower z-index) */}
+              {feed.length > 1 && (
+                <motion.div
+                  key={feed[1]._id + "-bg"}
+                  className="absolute"
+                  style={{
+                    zIndex: 1,
+                    top: "25px",
+                    left: "-15px",
+                    filter: "brightness(0.85)",
+                    transform: "scale(0.95) rotate(-6deg)",
+                    transformOrigin: "center top",
+                    boxShadow: "0 7px 15px rgba(0, 0, 0, 0.3)",
+                    transition: "all 0.3s ease-in-out",
+                    width: "100%",
+                  }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{
+                    opacity: 1,
+                    scale: 0.95,
+                    transition: { duration: 0.3 },
+                  }}
+                >
+                  <div className="pointer-events-none relative">
+                    <UserCard user={feed[1]} onHandleSendRequest={null} />
+                    <div className="absolute inset-0 bg-black/50 rounded-lg"></div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Foreground (active) card */}
+              <motion.div
+                key={feed[0]._id}
+                className="absolute"
+                style={{
+                  zIndex: 2,
+                  transformOrigin: "center top",
+                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)",
+                  width: "100%",
+                }}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                variants={cardVariants}
+                custom={exitDirection}
+              >
+                <UserCard
+                  user={feed[0]}
+                  onHandleSendRequest={handleSendRequest}
+                />
+              </motion.div>
+            </div>
+          </AnimatePresence>
         </div>
       ) : (
         <p className="text-2xl text-center text-gray-400 my-50">

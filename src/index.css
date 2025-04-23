@@ -23,6 +23,61 @@
   }
 }
 
+/* Card animations */
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes swipeLeft {
+  from {
+    transform: translateX(0) rotate(0);
+  }
+  to {
+    transform: translateX(-500px) rotate(-20deg);
+  }
+}
+
+@keyframes swipeRight {
+  from {
+    transform: translateX(0) rotate(0);
+  }
+  to {
+    transform: translateX(500px) rotate(20deg);
+  }
+}
+
+.animate-card-entrance {
+  animation: cardEntrance 0.5s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in forwards;
+}
+
+.animate-swipe-left {
+  animation: swipeLeft 0.5s ease-out forwards;
+}
+
+.animate-swipe-right {
+  animation: swipeRight 0.5s ease-out forwards;
+}
+
 .animate-spin {
   animation: spin 1s linear infinite;
 }
