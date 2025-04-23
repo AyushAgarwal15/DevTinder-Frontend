@@ -6,11 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
+import { useToast } from "../context/ToastContext";
 
 const Body = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userData = useSelector((store) => store.user);
+  const toast = useToast();
 
   const fetchUser = async () => {
     if (userData) return;
@@ -21,9 +23,12 @@ const Body = () => {
       dispatch(addUser(res.data));
     } catch (err) {
       if (err.status === 401) {
+        toast.info("Please login to continue");
         navigate("/login");
+      } else {
+        console.error(err);
+        toast.error("Failed to fetch user profile");
       }
-      console.error(err);
     }
   };
 
