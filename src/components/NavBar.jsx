@@ -41,7 +41,7 @@ const NavBar = () => {
         <div className="flex-1">
           <Link
             to="/"
-            className="btn btn-ghost gap-2 normal-case text-xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent hover:scale-105 transition-transform duration-200"
+            className="btn btn-ghost gap-2 normal-case text-xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent hover:scale-105 transition-transform duration-200 cursor-pointer"
           >
             <span className="text-2xl">💘</span>
             DevTinder
@@ -52,7 +52,7 @@ const NavBar = () => {
           <div className="hidden md:flex items-center gap-4 mr-6">
             <Link
               to="/connections"
-              className={`px-3 py-2 rounded-lg transition-colors ${
+              className={`px-3 py-2 rounded-lg transition-colors cursor-pointer ${
                 isActive("/connections")
                   ? "bg-[#7C3AED]/10 text-[#7C3AED] font-medium"
                   : "text-gray-300 hover:bg-[#252b3d] hover:text-white"
@@ -62,7 +62,7 @@ const NavBar = () => {
             </Link>
             <Link
               to="/requests"
-              className={`px-3 py-2 rounded-lg transition-colors flex items-center ${
+              className={`px-3 py-2 rounded-lg transition-colors flex items-center cursor-pointer ${
                 isActive("/requests")
                   ? "bg-[#7C3AED]/10 text-[#7C3AED] font-medium"
                   : "text-gray-300 hover:bg-[#252b3d] hover:text-white"
@@ -82,13 +82,13 @@ const NavBar = () => {
           <div className="flex gap-2">
             <Link
               to="/login"
-              className="px-3 py-1.5 text-sm text-gray-300 hover:text-white"
+              className="px-3 py-1.5 text-sm text-gray-300 hover:text-white cursor-pointer"
             >
               Log in
             </Link>
             <Link
               to="/signup"
-              className="px-3 py-1.5 text-sm bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-lg transition-colors"
+              className="px-3 py-1.5 text-sm bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-lg transition-colors cursor-pointer"
             >
               Sign up
             </Link>
@@ -131,7 +131,7 @@ const NavBar = () => {
                   <Link
                     to="/profile"
                     onClick={closeDropdown}
-                    className={`flex items-center p-3 rounded-lg ${
+                    className={`flex items-center p-3 rounded-lg cursor-pointer ${
                       isActive("/profile")
                         ? "bg-[#7C3AED]/10 text-[#7C3AED] font-medium"
                         : "text-gray-300 hover:bg-[#252b3d] hover:text-white"
@@ -161,7 +161,7 @@ const NavBar = () => {
                     <Link
                       to="/connections"
                       onClick={closeDropdown}
-                      className={`flex items-center p-3 rounded-lg ${
+                      className={`flex items-center p-3 rounded-lg cursor-pointer ${
                         isActive("/connections")
                           ? "bg-[#7C3AED]/10 text-[#7C3AED] font-medium"
                           : "text-gray-300 hover:bg-[#252b3d] hover:text-white"
@@ -188,7 +188,7 @@ const NavBar = () => {
                     <Link
                       to="/requests"
                       onClick={closeDropdown}
-                      className={`flex items-center p-3 rounded-lg ${
+                      className={`flex items-center p-3 rounded-lg cursor-pointer ${
                         isActive("/requests")
                           ? "bg-[#7C3AED]/10 text-[#7C3AED] font-medium"
                           : "text-gray-300 hover:bg-[#252b3d] hover:text-white"

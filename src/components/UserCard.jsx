@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 
 const UserCard = ({ user, onHandleSendRequest }) => {
@@ -47,8 +48,8 @@ const UserCard = ({ user, onHandleSendRequest }) => {
       </motion.div>
 
       <motion.div
-        className="card w-96 overflow-hidden shadow-xl transition-all duration-300 hover:shadow-2xl bg-[#1c2030] border border-gray-800"
-        drag="x"
+        className="card w-96 overflow-hidden shadow-xl transition-all duration-300 hover:shadow-2xl bg-[#1c2030] border border-gray-800 cursor-grab active:cursor-grabbing"
+        drag={onHandleSendRequest ? "x" : false}
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.7}
         onDragEnd={handleDragEnd}
@@ -56,11 +57,12 @@ const UserCard = ({ user, onHandleSendRequest }) => {
         whileDrag={{ scale: 0.98 }}
         dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
       >
-        <figure className="relative h-64 overflow-hidden">
+        <figure className="relative h-64 overflow-hidden pointer-events-none">
           <img
             src={photoUrl}
             alt={`${firstName} ${lastName}`}
             className="w-full h-full object-contain"
+            draggable="false"
           />
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
             <h2 className="text-2xl font-bold text-white">
@@ -71,7 +73,7 @@ const UserCard = ({ user, onHandleSendRequest }) => {
             </p>
           </div>
         </figure>
-        <div className="card-body p-5">
+        <div className="card-body p-5 pointer-events-none">
           <p className="text-gray-400 mb-3">{about}</p>
 
           {skills && skills.length > 0 && (
@@ -90,9 +92,12 @@ const UserCard = ({ user, onHandleSendRequest }) => {
             </div>
           )}
 
-          <div className="card-actions justify-end mt-2">
+          <div className="card-actions justify-end mt-2 pointer-events-auto">
             <button
-              onClick={() => onHandleSendRequest(_id, "ignored")}
+              onClick={(e) => {
+                e.stopPropagation();
+                onHandleSendRequest(_id, "ignored");
+              }}
               className="w-12 h-12 rounded-full bg-red-500 hover:bg-red-600 transition-colors flex items-center justify-center text-white border-none cursor-pointer"
             >
               <svg
@@ -111,7 +116,10 @@ const UserCard = ({ user, onHandleSendRequest }) => {
               </svg>
             </button>
             <button
-              onClick={() => onHandleSendRequest(_id, "interested")}
+              onClick={(e) => {
+                e.stopPropagation();
+                onHandleSendRequest(_id, "interested");
+              }}
               className="w-12 h-12 rounded-full bg-[#7C3AED] hover:bg-[#6D28D9] transition-colors flex items-center justify-center text-white border-none cursor-pointer"
             >
               <svg

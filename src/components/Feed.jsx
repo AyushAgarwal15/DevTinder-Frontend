@@ -117,7 +117,7 @@ const Feed = () => {
               <div className="relative w-96 h-96 flex items-center justify-center">
                 {/* Right swipe guide */}
                 <motion.div
-                  className="absolute right-[-50px] top-1/2 transform -translate-y-1/2 bg-green-500/80 text-white px-3 py-2 rounded-lg"
+                  className="absolute right-[-50px] top-1/2 transform -translate-y-1/2 bg-green-500/80 text-white px-3 py-2 rounded-lg cursor-default"
                   variants={guideVariants}
                   animate="swipeRight"
                 >
@@ -140,7 +140,7 @@ const Feed = () => {
 
                 {/* Left swipe guide */}
                 <motion.div
-                  className="absolute left-[-50px] top-1/2 transform -translate-y-1/2 bg-red-500/80 text-white px-3 py-2 rounded-lg"
+                  className="absolute left-[-50px] top-1/2 transform -translate-y-1/2 bg-red-500/80 text-white px-3 py-2 rounded-lg cursor-default"
                   variants={guideVariants}
                   animate="swipeLeft"
                 >
