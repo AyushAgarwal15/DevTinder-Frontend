@@ -28,11 +28,8 @@ const Feed = () => {
 
   const fetchFeed = async () => {
     if (!user) return;
-    if (feed) {
-      setIsLoading(false);
-      return;
-    }
     try {
+      setIsLoading(true);
       const res = await axios.get(BASE_URL + "/feed", {
         withCredentials: true,
       });

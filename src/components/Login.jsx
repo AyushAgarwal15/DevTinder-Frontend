@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { useToast } from "../context/ToastContext";
 import ButtonLoader from "./ButtonLoader";
+import { addRequests } from "../utils/requestSlice";
 
 const Login = () => {
   const [emailId, setEmail] = useState("guestuser@gmail.com");
@@ -15,6 +16,17 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
+
+  const fetchRequests = async () => {
+    try {
+      const res = await axios.get(BASE_URL + "/user/requests/received", {
+        withCredentials: true,
+      });
+      dispatch(addRequests(res?.data?.data));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleLogin = async () => {
     try {
@@ -32,6 +44,8 @@ const Login = () => {
 
       dispatch(addUser(res.data));
       toast.success("Login successful! Welcome back.");
+      // Fetching requests after successful login so that I can show the request count on entering in the app
+      fetchRequests();
       navigate("/");
     } catch (err) {
       const errorMessage = err?.response?.data || "Something went wrong";
