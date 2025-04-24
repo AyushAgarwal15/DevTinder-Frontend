@@ -16,7 +16,7 @@ const Profile = () => {
           </h2>
           <button
             onClick={() => setIsEditing(!isEditing)}
-            className="px-4 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors flex items-center gap-2"
+            className="px-4 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors flex items-center gap-2 cursor-pointer"
           >
             {isEditing ? (
               <>

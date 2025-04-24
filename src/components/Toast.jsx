@@ -24,10 +24,14 @@ const Toast = ({ message, type = "success", duration = 3000, onClose }) => {
   // Handle close button click
   const handleClose = () => {
     setIsLeaving(true);
-    setTimeout(() => {
+
+    // Use a timeout to wait for the animation to complete
+    const animationTimeout = setTimeout(() => {
       setIsVisible(false);
-      onClose && onClose();
-    }, 500); // Match this to the animation duration
+      if (onClose) onClose();
+    }, 300); // Match this to the animation duration in CSS
+
+    return () => clearTimeout(animationTimeout);
   };
 
   // If not visible, don't render
@@ -129,8 +133,11 @@ const Toast = ({ message, type = "success", duration = 3000, onClose }) => {
           <p className="font-medium">{message}</p>
         </div>
         <button
-          onClick={handleClose}
-          className="text-white ml-4 focus:outline-none hover:text-gray-200 transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClose();
+          }}
+          className="text-white ml-4 focus:outline-none hover:text-gray-200 transition-colors cursor-pointer"
           aria-label="Close"
         >
           <svg

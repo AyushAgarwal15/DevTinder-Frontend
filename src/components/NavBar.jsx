@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { removeUser } from "../utils/userSlice";
+import { removeRequests } from "../utils/requestSlice";
+import { removeConnections } from "../utils/connectionSlice";
+import { removeFeed } from "../utils/feedSlice";
 import { useToast } from "../context/ToastContext";
 import Logo from "./Logo";
 
@@ -16,13 +19,16 @@ const NavBar = () => {
 
   const handleLogout = async () => {
     try {
+      // First, navigate to login page immediately to ensure fast UI feedback
+      navigate("/login");
+
+      // Then, make the API request and clear the Redux store
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
       dispatch(removeUser());
       dispatch(removeRequests());
       dispatch(removeConnections());
       dispatch(removeFeed());
       toast.success("Logged out successfully");
-      navigate("/login");
     } catch (err) {
       console.error(err);
       toast.error("Failed to logout. Please try again.");
