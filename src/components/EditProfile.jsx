@@ -232,7 +232,7 @@ const EditProfile = ({ user }) => {
               <button
                 type="button"
                 onClick={handleSkillAdd}
-                className="px-6 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors"
+                className="px-6 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors cursor-pointer"
               >
                 Add
               </button>
@@ -247,7 +247,7 @@ const EditProfile = ({ user }) => {
                   <button
                     type="button"
                     onClick={() => handleSkillRemove(skill)}
-                    className="text-white hover:text-gray-200"
+                    className="text-white hover:text-gray-200 cursor-pointer"
                   >
                     ✕
                   </button>
@@ -261,7 +261,7 @@ const EditProfile = ({ user }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`px-6 py-2 text-white rounded-lg transition-colors ${
+              className={`px-6 py-2 text-white rounded-lg transition-colors cursor-pointer ${
                 isLoading
                   ? "bg-gray-500 cursor-not-allowed"
                   : "bg-[#7C3AED] hover:bg-[#6D28D9]"

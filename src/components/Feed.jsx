@@ -9,14 +9,13 @@ import Loader from "./Loader";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Feed = () => {
+  const user = useSelector((store) => store.user);
   const feed = useSelector((store) => store.feed);
   const dispatch = useDispatch();
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [exitDirection, setExitDirection] = useState(null);
   const [showGuide, setShowGuide] = useState(true);
-  const [isCardExiting, setIsCardExiting] = useState(false);
-
   // Auto-hide guide after a few seconds
   useEffect(() => {
     if (showGuide) {
@@ -28,6 +27,7 @@ const Feed = () => {
   }, [showGuide]);
 
   const fetchFeed = async () => {
+    if (!user) return;
     if (feed) {
       setIsLoading(false);
       return;

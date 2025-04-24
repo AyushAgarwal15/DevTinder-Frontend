@@ -11,28 +11,30 @@ import { useToast } from "../context/ToastContext";
 const Body = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userData = useSelector((store) => store.user);
+  const user = useSelector((store) => store.user);
   const toast = useToast();
 
   const fetchUser = async () => {
-    if (userData) return;
+    if (user) return; // If user is already in Redux state, no need to fetch
     try {
       const res = await axios.get(BASE_URL + "/profile/view", {
         withCredentials: true,
       });
       dispatch(addUser(res.data));
     } catch (err) {
-      if (err.status === 401) {
+      if (err.response && err.response.status === 401) {
         toast.info("Please login to continue");
         navigate("/login");
       } else {
         console.error(err);
         toast.error("Failed to fetch user profile");
+        navigate("/login");
       }
     }
   };
 
   useEffect(() => {
+    // Try to fetch user data on initial load if not already in Redux
     fetchUser();
   }, []);
 
