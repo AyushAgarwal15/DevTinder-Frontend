@@ -124,6 +124,18 @@ const Chat = () => {
     // Create socket connection once
     socketRef.current = createSocketConnection();
 
+    // Check if connection was created successfully
+    if (!socketRef.current) {
+      console.error("Failed to create socket connection");
+      return;
+    }
+
+    // Listen for errors
+    socketRef.current.on("error", (error) => {
+      console.error("Socket error:", error);
+      // Optionally show an error message to the user
+    });
+
     // Join chat room
     socketRef.current.emit("joinChat", {
       firstName: user?.firstName,
@@ -135,24 +147,27 @@ const Chat = () => {
     socketRef.current.on("receivedMessage", (message) => {
       console.log("Received message:", message);
 
-      // Adapt the socket message to match our expected format if needed
-      const formattedMessage = message.senderId
-        ? message
-        : {
-            senderId: {
-              _id: message.sender,
-              firstName: message.senderName || "User",
-              photoUrl: message.senderPhoto || DEFAULT_AVATAR,
-            },
-            text: message.text,
-            _id: message._id || Date.now().toString(),
-            createdAt: message.timestamp || new Date().toISOString(),
-            updatedAt: message.timestamp || new Date().toISOString(),
-          };
+      // Only add the received message if it's not already added via optimistic update
+      if (message.senderId && message.senderId._id !== userId) {
+        setMessages((prev) => [...prev, message]);
+      } else if (message.senderId && message.senderId._id === userId) {
+        // For messages sent by us, find our optimistic update and replace it with the server version
+        // This ensures we have the correct server ID and timestamp
+        const msgId = message._id;
+        setMessages((prev) => {
+          const existingIndex = prev.findIndex(
+            (m) => m.text === message.text && m.senderId._id === userId
+          );
 
-      // Only add received messages (not ones we sent)
-      if (formattedMessage.senderId._id !== userId) {
-        setMessages((prev) => [...prev, formattedMessage]);
+          if (existingIndex !== -1) {
+            const updated = [...prev];
+            updated[existingIndex] = message;
+            return updated;
+          }
+
+          // If not found (unlikely but possible), just append
+          return [...prev, message];
+        });
       }
     });
 
@@ -169,6 +184,9 @@ const Chat = () => {
       console.log("Cleaning up socket connection");
       if (socketRef.current) {
         socketRef.current.off("receivedMessage");
+        socketRef.current.off("chatHistory");
+        socketRef.current.off("error");
+        socketRef.current.off("userJoined");
         socketRef.current.disconnect();
       }
       hasInitializedRef.current = false;
