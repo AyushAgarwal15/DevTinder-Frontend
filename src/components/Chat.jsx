@@ -468,7 +468,7 @@ const Chat = () => {
             />
             <button
               type="submit"
-              className="bg-[#7C3AED] text-white p-3 rounded-lg hover:bg-[#6025c0] transition-colors flex items-center justify-center shadow-lg shadow-[#7C3AED]/20"
+              className="bg-[#7C3AED] text-white p-3 rounded-lg hover:bg-[#6025c0] transition-colors flex items-center justify-center shadow-lg shadow-[#7C3AED]/20 cursor-pointer"
               disabled={!newMessage.trim() || loading}
             >
               <svg

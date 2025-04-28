@@ -22,12 +22,13 @@ function App() {
               <Routes>
                 <Route path="/" element={<Body />}>
                   <Route path="/" element={<Feed />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/connections" element={<Connections />} />
                   <Route path="/requests" element={<Requests />} />
                 </Route>
+                {/* Auth routes outside of Body to make them full screen without navbar/footer */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
                 {/* Chat route outside of Body to make it full screen without navbar/footer */}
                 <Route path="/chat/:targetUserId" element={<Chat />} />
               </Routes>

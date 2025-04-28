@@ -136,3 +136,16 @@
 .line-clamp-3 {
   -webkit-line-clamp: 3;
 }
+
+/* Scrollbar utilities */
+.scrollbar-hide {
+  /* Firefox */
+  scrollbar-width: none;
+  /* IE/Edge */
+  -ms-overflow-style: none;
+}
+
+/* WebKit browsers (Chrome, Safari) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
