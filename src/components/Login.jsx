@@ -8,6 +8,7 @@ import { useToast } from "../context/ToastContext";
 import ButtonLoader from "./ButtonLoader";
 import { addRequests } from "../utils/requestSlice";
 import Logo from "./Logo";
+import authThumbnail from "../assets/images/auth_thumbnail.jpeg";
 
 const Login = () => {
   const [emailId, setEmail] = useState("guestuser@gmail.com");
@@ -23,18 +24,46 @@ const Login = () => {
   // Check if user is already authenticated
   useEffect(() => {
     const checkAuthStatus = async () => {
+      // Create an abort controller for the API request
+      const controller = new AbortController();
+
+      // Set a timeout to abort the request after 5 seconds
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+        console.log("Auth check timed out");
+        setIsCheckingAuth(false);
+        sessionStorage.setItem("lastAuthCheck", Date.now().toString());
+      }, 5000);
+
       try {
         setIsCheckingAuth(true);
+
         // First check Redux store
         if (user) {
+          clearTimeout(timeoutId);
           navigate("/");
+          return;
+        }
+
+        // Check if we've already verified auth status recently
+        const lastAuthCheck = sessionStorage.getItem("lastAuthCheck");
+        const authCheckTimestamp = lastAuthCheck ? parseInt(lastAuthCheck) : 0;
+        const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
+
+        // Skip API call if we checked auth in the last 5 minutes and user is not authenticated
+        if (authCheckTimestamp > fiveMinutesAgo) {
+          clearTimeout(timeoutId);
+          setIsCheckingAuth(false);
           return;
         }
 
         // Then verify with the server
         const res = await axios.get(BASE_URL + "/profile/view", {
           withCredentials: true,
+          signal: controller.signal,
         });
+
+        clearTimeout(timeoutId);
 
         if (res.data) {
           // User is authenticated, update Redux and redirect
@@ -42,9 +71,19 @@ const Login = () => {
           navigate("/");
         }
       } catch (error) {
-        // If 401 or any other error, user is not authenticated, allow login page access
-        console.log("User not authenticated, showing login page");
+        clearTimeout(timeoutId);
+
+        // If aborted or 401 or any other error, user is not authenticated
+        if (error.name === "AbortError") {
+          console.log("Auth check aborted due to timeout");
+        } else {
+          console.log("User not authenticated, showing login page");
+        }
+
+        // Record the timestamp of this auth check
+        sessionStorage.setItem("lastAuthCheck", Date.now().toString());
       } finally {
+        clearTimeout(timeoutId);
         setIsCheckingAuth(false);
       }
     };
@@ -205,7 +244,7 @@ const Login = () => {
         {/* Right side: Image container (hidden on mobile) */}
         <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
           <img
-            src="/auth_thumbnail.jpeg"
+            src={authThumbnail}
             alt="Developer coding"
             className="w-full h-full object-cover"
           />

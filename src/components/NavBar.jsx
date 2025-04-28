@@ -23,10 +23,7 @@ const NavBar = () => {
 
   const handleLogout = async () => {
     try {
-      // First, navigate to login page immediately to ensure fast UI feedback
-      navigate("/login");
-
-      // Reset socket connection
+      // Reset socket connection first
       resetSocketConnection();
 
       // Then, make the API request and clear the Redux store
@@ -36,6 +33,9 @@ const NavBar = () => {
       dispatch(removeConnections());
       dispatch(removeFeed());
       dispatch(removeAllNotifications());
+
+      // Finally, navigate to login page after Redux store is cleared
+      navigate("/login");
       toast.success("Logged out successfully");
     } catch (err) {
       console.error(err);
