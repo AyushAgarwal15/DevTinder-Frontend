@@ -6,12 +6,16 @@ import { removeUser } from "../utils/userSlice";
 import { removeRequests } from "../utils/requestSlice";
 import { removeConnections } from "../utils/connectionSlice";
 import { removeFeed } from "../utils/feedSlice";
+import { removeAllNotifications } from "../utils/messageNotificationsSlice";
+import { resetSocketConnection } from "../utils/socket";
 import { useToast } from "../context/ToastContext";
 import Logo from "./Logo";
+import Messages from "./Messages";
 
 const NavBar = () => {
   const user = useSelector((store) => store.user);
   const requests = useSelector((store) => store.requests);
+  const { unreadCount } = useSelector((store) => store.messageNotifications);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
@@ -22,12 +26,16 @@ const NavBar = () => {
       // First, navigate to login page immediately to ensure fast UI feedback
       navigate("/login");
 
+      // Reset socket connection
+      resetSocketConnection();
+
       // Then, make the API request and clear the Redux store
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
       dispatch(removeUser());
       dispatch(removeRequests());
       dispatch(removeConnections());
       dispatch(removeFeed());
+      dispatch(removeAllNotifications());
       toast.success("Logged out successfully");
     } catch (err) {
       console.error(err);
@@ -77,6 +85,44 @@ const NavBar = () => {
                 </span>
               )}
             </Link>
+
+            {/* Messages dropdown */}
+            <div className="dropdown dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className={`flex items-center px-3 py-2 rounded-lg transition-colors cursor-pointer ${"text-gray-300 hover:bg-[#252b3d] hover:text-white"}`}
+              >
+                <div className="relative">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                    />
+                  </svg>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 px-1.5 py-0.5 text-xs bg-[#7C3AED] text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
+                </div>
+                <span className="ml-1">Messages</span>
+              </div>
+              <div
+                tabIndex={0}
+                className="dropdown-content z-30 mt-2 shadow-2xl bg-[#1c2030] border border-gray-800 rounded-lg w-80"
+              >
+                <Messages />
+              </div>
+            </div>
           </div>
         )}
 
@@ -217,6 +263,44 @@ const NavBar = () => {
                         </span>
                       )}
                     </Link>
+                  </li>
+
+                  {/* Mobile Messages Link */}
+                  <li>
+                    <div className="dropdown dropdown-bottom dropdown-end w-full">
+                      <div
+                        className="flex items-center p-3 rounded-lg cursor-pointer text-gray-300 hover:bg-[#252b3d] hover:text-white w-full"
+                        tabIndex={0}
+                        role="button"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                          />
+                        </svg>
+                        <span className="ml-3">Messages</span>
+                        {unreadCount > 0 && (
+                          <span className="ml-auto px-1.5 py-0.5 text-xs bg-[#7C3AED] text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center">
+                            {unreadCount > 99 ? "99+" : unreadCount}
+                          </span>
+                        )}
+                      </div>
+                      <div
+                        tabIndex={0}
+                        className="dropdown-content z-30 mt-2 shadow-2xl bg-[#1c2030] border border-gray-800 rounded-lg w-full max-w-sm"
+                      >
+                        <Messages />
+                      </div>
+                    </div>
                   </li>
                 </div>
 

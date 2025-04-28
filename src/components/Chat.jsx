@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { createSocketConnection } from "../utils/socket";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
+import { markAsRead } from "../utils/messageNotificationsSlice";
 
 // Default avatar for fallback instead of external placeholder
 const DEFAULT_AVATAR =
@@ -22,6 +23,7 @@ const Chat = () => {
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
   const hasInitializedRef = useRef(false);
+  const dispatch = useDispatch();
 
   // Scroll to bottom of messages
   const scrollToBottom = () => {
@@ -31,6 +33,27 @@ const Chat = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Mark messages from this user as read when entering the chat
+  useEffect(() => {
+    if (targetUserId) {
+      dispatch(markAsRead(targetUserId));
+    }
+  }, [targetUserId, dispatch]);
+
+  // Notify server when navigating away from chat
+  useEffect(() => {
+    return () => {
+      // When component unmounts (leaving chat)
+      if (socketRef.current && userId && targetUserId) {
+        console.log("Leaving chat with", targetUserId);
+        socketRef.current.emit("leaveChat", {
+          userId,
+          targetUserId,
+        });
+      }
+    };
+  }, [userId, targetUserId]);
 
   const fetchChats = async () => {
     try {
@@ -118,10 +141,13 @@ const Chat = () => {
   useEffect(() => {
     if (!userId || !targetUserId || hasInitializedRef.current) return;
 
-    console.log("Initializing socket connection");
+    console.log(
+      "Initializing socket connection in Chat for room:",
+      targetUserId
+    );
     hasInitializedRef.current = true;
 
-    // Create socket connection once
+    // Create socket connection once - will reuse existing connection if available
     socketRef.current = createSocketConnection();
 
     // Check if connection was created successfully
@@ -130,13 +156,20 @@ const Chat = () => {
       return;
     }
 
+    // Clean up any previous listeners to avoid duplicates
+    socketRef.current.off("receivedMessage");
+    socketRef.current.off("chatHistory");
+    socketRef.current.off("error");
+    socketRef.current.off("userJoined");
+
     // Listen for errors
     socketRef.current.on("error", (error) => {
-      console.error("Socket error:", error);
+      console.error("Socket error in Chat:", error);
       // Optionally show an error message to the user
     });
 
     // Join chat room
+    console.log("Emitting joinChat event for:", targetUserId);
     socketRef.current.emit("joinChat", {
       firstName: user?.firstName,
       userId,
@@ -145,15 +178,33 @@ const Chat = () => {
 
     // Listen for incoming messages
     socketRef.current.on("receivedMessage", (message) => {
-      console.log("Received message:", message);
+      console.log("Received message in Chat component:", message);
 
       // Only add the received message if it's not already added via optimistic update
       if (message.senderId && message.senderId._id !== userId) {
-        setMessages((prev) => [...prev, message]);
+        setMessages((prev) => {
+          // Check if this message is already in our list to avoid duplicates
+          const isDuplicate = prev.some(
+            (m) =>
+              m._id === message._id ||
+              (m.text === message.text &&
+                m.senderId &&
+                m.senderId._id === message.senderId._id)
+          );
+
+          if (isDuplicate) {
+            console.log("Skipping duplicate message");
+            return prev;
+          }
+
+          return [...prev, message];
+        });
+
+        // Since we're actively in this chat, mark messages from this user as read
+        dispatch(markAsRead(targetUserId));
       } else if (message.senderId && message.senderId._id === userId) {
         // For messages sent by us, find our optimistic update and replace it with the server version
         // This ensures we have the correct server ID and timestamp
-        const msgId = message._id;
         setMessages((prev) => {
           const existingIndex = prev.findIndex(
             (m) => m.text === message.text && m.senderId._id === userId
@@ -174,24 +225,39 @@ const Chat = () => {
     // Listen for chat history
     socketRef.current.on("chatHistory", (history) => {
       console.log("Received chat history:", history);
-      if (Array.isArray(history)) {
+      if (Array.isArray(history) && history.length > 0) {
         setMessages(history);
       }
     });
 
+    // Monitor connection status
+    const handleReconnect = () => {
+      console.log("Socket reconnected in Chat component, rejoining chat");
+      // Rejoin the chat room on reconnection
+      socketRef.current.emit("joinChat", {
+        firstName: user?.firstName,
+        userId,
+        targetUserId,
+      });
+    };
+
+    socketRef.current.on("connect", handleReconnect);
+
     // Clean up on unmount
     return () => {
-      console.log("Cleaning up socket connection");
+      console.log("Cleaning up socket connection in Chat");
       if (socketRef.current) {
         socketRef.current.off("receivedMessage");
         socketRef.current.off("chatHistory");
         socketRef.current.off("error");
         socketRef.current.off("userJoined");
-        socketRef.current.disconnect();
+        socketRef.current.off("connect", handleReconnect);
+        // Note: We don't disconnect the socket anymore since it's shared
+        // We just remove our listeners
       }
       hasInitializedRef.current = false;
     };
-  }, [userId, targetUserId]);
+  }, [userId, targetUserId, dispatch, user?.firstName]);
 
   // Determine if we have target user information
   const hasTargetUserInfo = targetUser && targetUser.firstName;
