@@ -74,6 +74,18 @@ const EditProfile = ({ user }) => {
     }));
   };
 
+  const handleKeyDown = (e) => {
+    // Prevent form submission on Enter key except in textarea
+    if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+      e.preventDefault();
+
+      // If Enter is pressed in skill input, add the skill
+      if (e.target.name === "skillInput") {
+        handleSkillAdd();
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -105,7 +117,11 @@ const EditProfile = ({ user }) => {
           <Loader size="large" text="Loading your profile..." />
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          onKeyDown={handleKeyDown}
+          className="space-y-6"
+        >
           {/* Profile Photo */}
           <div className="flex justify-center mb-8">
             <div className="w-24 h-24 rounded-full bg-gray-700 border-2 border-[#7C3AED] overflow-hidden relative">
@@ -223,11 +239,11 @@ const EditProfile = ({ user }) => {
             <div className="flex gap-2">
               <input
                 type="text"
+                name="skillInput"
                 value={skillInput}
                 onChange={(e) => setSkillInput(e.target.value)}
                 placeholder="Add a skill"
                 className="flex-1 px-4 py-3 bg-[#1c2030] border border-gray-700 rounded-lg text-gray-200 focus:border-[#7C3AED] focus:outline-none"
-                onKeyPress={(e) => e.key === "Enter" && handleSkillAdd()}
               />
               <button
                 type="button"
