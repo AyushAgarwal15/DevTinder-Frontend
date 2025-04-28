@@ -9,6 +9,7 @@ import ToastProvider from "./context/ToastContext";
 import Signup from "./components/Signup";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
+import Chat from "./components/Chat";
 
 function App() {
   return (
@@ -25,6 +26,8 @@ function App() {
                 <Route path="/connections" element={<Connections />} />
                 <Route path="/requests" element={<Requests />} />
               </Route>
+              {/* Chat route outside of Body to make it full screen without navbar/footer */}
+              <Route path="/chat/:targetUserId" element={<Chat />} />
             </Routes>
           </BrowserRouter>
         </ToastProvider>

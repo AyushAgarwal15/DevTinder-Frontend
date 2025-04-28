@@ -46,7 +46,6 @@ const Feed = () => {
     try {
       // Set exit direction for animation
       setExitDirection(status === "interested" ? "right" : "left");
-      setIsCardExiting(true);
 
       // Wait for animation and then make API call
       setTimeout(async () => {
@@ -61,7 +60,6 @@ const Feed = () => {
 
         // Reset exit direction and card exiting state
         setExitDirection(null);
-        setIsCardExiting(false);
       }, 300);
     } catch (err) {
       const errorMessage = err?.response?.data || "Failed to accept request";
