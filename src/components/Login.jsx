@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
@@ -14,9 +14,43 @@ const Login = () => {
   const [password, setPassword] = useState("@Guest.1234");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
+  const user = useSelector((store) => store.user);
+
+  // Check if user is already authenticated
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        setIsCheckingAuth(true);
+        // First check Redux store
+        if (user) {
+          navigate("/");
+          return;
+        }
+
+        // Then verify with the server
+        const res = await axios.get(BASE_URL + "/profile/view", {
+          withCredentials: true,
+        });
+
+        if (res.data) {
+          // User is authenticated, update Redux and redirect
+          dispatch(addUser(res.data));
+          navigate("/");
+        }
+      } catch (error) {
+        // If 401 or any other error, user is not authenticated, allow login page access
+        console.log("User not authenticated, showing login page");
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, [dispatch, navigate, user]);
 
   const fetchRequests = async () => {
     try {
@@ -57,6 +91,15 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
+  // Return a loading state while checking auth
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1c2030] to-[#16171f]">
+        <div className="w-16 h-16 border-4 border-t-transparent border-[#7C3AED] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1c2030] to-[#16171f]">
