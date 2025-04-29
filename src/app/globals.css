@@ -1,0 +1,72 @@
+/* Premium card effects */
+.premium-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-card::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 215, 0, 0.1) 40%,
+    rgba(255, 215, 0, 0.2) 50%,
+    rgba(255, 215, 0, 0.1) 60%,
+    transparent 70%
+  );
+  transform: rotate(45deg);
+  animation: shine 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes shine {
+  0% {
+    top: -100%;
+    left: -100%;
+  }
+  100% {
+    top: 100%;
+    left: 100%;
+  }
+}
+
+/* Ensure Framer Motion animations are smooth */
+* {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Premium button hover effect */
+.premium-card button:hover {
+  transform: translateY(-2px);
+  transition: transform 0.3s ease;
+}
+
+/* Text shimmer effect for premium content */
+.text-shimmer {
+  background: linear-gradient(
+    to right,
+    #d4af37 0%,
+    #f1daa5 20%,
+    #d4af37 40%,
+    #d4af37 60%,
+    #f1daa5 80%,
+    #d4af37 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: textShimmer 3s linear infinite;
+}
+
+@keyframes textShimmer {
+  to {
+    background-position: 200% center;
+  }
+}

@@ -7,19 +7,11 @@ import { addRequests, removeRequests } from "../utils/requestSlice";
 import { removeConnections } from "../utils/connectionSlice";
 import RequestCard from "./RequestCard";
 import Loader from "./Loader";
-import { RootState } from "../utils/types";
-
-interface UserData {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  photoUrl?: string;
-  skills?: string[];
-}
+import { RootState, User } from "../utils/types";
 
 interface Request {
   _id: string;
-  fromUserId: UserData;
+  fromUserId: User;
   toUserId: string;
   status: string;
   createdAt: string;
