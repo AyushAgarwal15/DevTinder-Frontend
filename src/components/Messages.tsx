@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { markAllAsRead, markAsRead } from "../utils/messageNotificationsSlice";
 import { RootState } from "../utils/types";
+import { BsChatDots } from "react-icons/bs";
 
 // Default avatar for fallback
 const DEFAULT_AVATAR =
@@ -85,20 +86,7 @@ const Messages: React.FC = () => {
       {notifications.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-8 px-4">
           <div className="w-16 h-16 bg-[#252b3d] rounded-full flex items-center justify-center mb-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8 text-gray-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-              />
-            </svg>
+            <BsChatDots className="h-8 w-8 text-gray-500" />
           </div>
           <p className="text-gray-400 text-center mb-1">No messages yet</p>
           <p className="text-gray-500 text-sm text-center">

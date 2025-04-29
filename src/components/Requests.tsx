@@ -8,6 +8,7 @@ import { removeConnections } from "../utils/connectionSlice";
 import RequestCard from "./RequestCard";
 import Loader from "./Loader";
 import { RootState, User } from "../utils/types";
+import { FaInbox, FaSync, FaUserClock } from "react-icons/fa";
 
 interface Request {
   _id: string;
@@ -84,13 +85,25 @@ const Requests = () => {
   return (
     <div className="min-h-screen bg-[#1c2030] py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[#7C3AED]">
-            Connection Requests
-          </h2>
-          <p className="text-gray-400 mt-1">
-            Accept or reject developers who want to connect with you
-          </p>
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h2 className="text-2xl font-bold text-[#7C3AED] flex items-center gap-2">
+              <FaInbox className="text-purple-400" />
+              Connection Requests
+            </h2>
+            <p className="text-gray-400 mt-1">
+              Accept or reject developers who want to connect with you
+            </p>
+          </div>
+
+          <button
+            onClick={fetchRequests}
+            className="flex items-center gap-2 px-4 py-2 bg-[#252b3d] text-gray-300 hover:bg-[#303952] rounded-lg transition-colors cursor-pointer"
+            disabled={isLoading}
+          >
+            <FaSync className={isLoading ? "animate-spin" : ""} />
+            Refresh
+          </button>
         </div>
 
         {isLoading ? (
@@ -111,11 +124,9 @@ const Requests = () => {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-16 px-4 bg-[#252b3d] rounded-lg border border-gray-800">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/6598/6598519.png"
-              alt="No requests"
-              className="w-32 h-32 mb-6 opacity-30"
-            />
+            <div className="w-24 h-24 bg-[#1c2030] rounded-full flex items-center justify-center mb-6">
+              <FaUserClock className="h-12 w-12 text-purple-400 opacity-70" />
+            </div>
             <h3 className="text-xl font-medium text-gray-300 mb-2">
               No pending requests
             </h3>

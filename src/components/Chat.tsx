@@ -8,6 +8,7 @@ import { BASE_URL } from "../utils/constants";
 import { markAsRead } from "../utils/messageNotificationsSlice";
 import { RootState, AppDispatch } from "../utils/types";
 import { Socket } from "socket.io-client";
+import { FaArrowLeft, FaArrowCircleRight } from "react-icons/fa";
 
 // Default avatar for fallback instead of external placeholder
 const DEFAULT_AVATAR =
@@ -331,20 +332,7 @@ const Chat: React.FC = () => {
             to="/connections"
             className="text-gray-400 hover:text-[#7C3AED] transition-colors mr-3"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
+            <FaArrowLeft className="h-6 w-6" />
           </Link>
 
           {/* Target user info - show placeholder while loading */}
@@ -526,18 +514,7 @@ const Chat: React.FC = () => {
               className="bg-[#7C3AED] text-white p-3 rounded-lg hover:bg-[#6025c0] transition-colors flex items-center justify-center shadow-lg shadow-[#7C3AED]/20 cursor-pointer"
               disabled={!newMessage.trim() || loading}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <FaArrowCircleRight className="h-5 w-5" />
             </button>
           </form>
         </div>

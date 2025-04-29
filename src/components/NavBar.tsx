@@ -12,6 +12,8 @@ import { useToast } from "../context/ToastContext";
 import Logo from "./Logo";
 import Messages from "./Messages";
 import { RootState } from "../utils/types";
+import { BsChatDots } from "react-icons/bs";
+import { FaSignOutAlt, FaUser, FaUsers, FaUserPlus } from "react-icons/fa";
 
 interface User {
   _id: string;
@@ -83,13 +85,16 @@ const NavBar: React.FC = () => {
           <div className="hidden md:flex items-center gap-4 mr-6">
             <Link
               to="/connections"
-              className={`px-3 py-2 rounded-lg transition-colors cursor-pointer ${
+              className={`px-3 py-2 rounded-lg transition-colors cursor-pointer flex items-center ${
                 isActive("/connections")
                   ? "bg-[#7C3AED]/10 text-[#7C3AED] font-medium"
                   : "text-gray-300 hover:bg-[#252b3d] hover:text-white"
               }`}
             >
-              Connections
+              <div className="relative">
+                <FaUsers className="h-5 w-5" />
+              </div>
+              <span className="ml-1">Connections</span>
             </Link>
             <Link
               to="/requests"
@@ -99,7 +104,10 @@ const NavBar: React.FC = () => {
                   : "text-gray-300 hover:bg-[#252b3d] hover:text-white"
               }`}
             >
-              Requests
+              <div className="relative">
+                <FaUserPlus className="h-5 w-5" />
+              </div>
+              <span className="ml-1">Requests</span>
               {requests && requests.length > 0 && (
                 <span className="ml-1 px-1.5 py-0.5 text-xs bg-[#7C3AED] text-white rounded-full">
                   {requests.length}
@@ -115,20 +123,7 @@ const NavBar: React.FC = () => {
                 className={`flex items-center px-3 py-2 rounded-lg transition-colors cursor-pointer ${"text-gray-300 hover:bg-[#252b3d] hover:text-white"}`}
               >
                 <div className="relative">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                    />
-                  </svg>
+                  <BsChatDots className="h-5 w-5" />
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 px-1.5 py-0.5 text-xs bg-[#7C3AED] text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center">
                       {unreadCount > 99 ? "99+" : unreadCount}
@@ -206,20 +201,7 @@ const NavBar: React.FC = () => {
                         : "text-gray-300 hover:bg-[#252b3d] hover:text-white"
                     }`}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
+                    <FaUser className="h-5 w-5" />
                     <span className="ml-3">Profile</span>
                   </Link>
                 </li>
@@ -236,20 +218,7 @@ const NavBar: React.FC = () => {
                           : "text-gray-300 hover:bg-[#252b3d] hover:text-white"
                       }`}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                        />
-                      </svg>
+                      <FaUsers className="h-5 w-5" />
                       <span className="ml-3">Connections</span>
                     </Link>
                   </li>
@@ -263,20 +232,7 @@ const NavBar: React.FC = () => {
                           : "text-gray-300 hover:bg-[#252b3d] hover:text-white"
                       }`}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                        />
-                      </svg>
+                      <FaUserPlus className="h-5 w-5" />
                       <span className="ml-3">Requests</span>
                       {requests && requests.length > 0 && (
                         <span className="ml-1 px-1.5 py-0.5 text-xs bg-[#7C3AED] text-white rounded-full">
@@ -294,20 +250,7 @@ const NavBar: React.FC = () => {
                         tabIndex={0}
                         role="button"
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                          />
-                        </svg>
+                        <BsChatDots className="h-5 w-5" />
                         <span className="ml-3">Messages</span>
                         {unreadCount > 0 && (
                           <span className="ml-auto px-1.5 py-0.5 text-xs bg-[#7C3AED] text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center">
@@ -334,20 +277,7 @@ const NavBar: React.FC = () => {
                     }}
                     className="flex p-3 text-red-400 hover:bg-red-900/20 w-full rounded-lg cursor-pointer"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
+                    <FaSignOutAlt className="h-5 w-5" />
                     <span className="ml-3">Logout</span>
                   </button>
                 </li>

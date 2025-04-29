@@ -7,7 +7,22 @@ import { useToast } from "../context/ToastContext";
 import ButtonLoader from "./ButtonLoader";
 import Loader from "./Loader";
 import { AppDispatch } from "../utils/types";
-import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
+import {
+  FaLinkedin,
+  FaGithub,
+  FaGlobe,
+  FaUser,
+  FaIdCard,
+  FaEnvelope,
+  FaBirthdayCake,
+  FaVenusMars,
+  FaInfo,
+  FaCode,
+  FaSave,
+  FaCloudUploadAlt,
+  FaPlus,
+  FaTimes,
+} from "react-icons/fa";
 
 // User interface that matches the app's structure
 interface User {
@@ -190,7 +205,10 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
 
           <div className="form-control mb-6">
             <label className="block text-gray-400 mb-2">
-              Profile Photo URL
+              <span className="flex items-center gap-2">
+                <FaCloudUploadAlt className="text-purple-400" />
+                Profile Photo URL
+              </span>
             </label>
             <input
               type="url"
@@ -205,7 +223,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             <div className="form-control">
-              <label className="block text-gray-400 mb-2">First Name</label>
+              <label className="block text-gray-400 mb-2">
+                <span className="flex items-center gap-2">
+                  <FaUser className="text-blue-400" />
+                  First Name
+                </span>
+              </label>
               <input
                 type="text"
                 name="firstName"
@@ -217,7 +240,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
             </div>
 
             <div className="form-control">
-              <label className="block text-gray-400 mb-2">Last Name</label>
+              <label className="block text-gray-400 mb-2">
+                <span className="flex items-center gap-2">
+                  <FaIdCard className="text-green-400" />
+                  Last Name
+                </span>
+              </label>
               <input
                 type="text"
                 name="lastName"
@@ -229,7 +257,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
             </div>
 
             <div className="form-control">
-              <label className="block text-gray-400 mb-2">Email</label>
+              <label className="block text-gray-400 mb-2">
+                <span className="flex items-center gap-2">
+                  <FaEnvelope className="text-red-400" />
+                  Email
+                </span>
+              </label>
               <input
                 type="email"
                 name="emailId"
@@ -240,7 +273,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
             </div>
 
             <div className="form-control">
-              <label className="block text-gray-400 mb-2">Age</label>
+              <label className="block text-gray-400 mb-2">
+                <span className="flex items-center gap-2">
+                  <FaBirthdayCake className="text-yellow-400" />
+                  Age
+                </span>
+              </label>
               <input
                 type="number"
                 name="age"
@@ -252,7 +290,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
             </div>
 
             <div className="form-control col-span-full">
-              <label className="block text-gray-400 mb-2">Gender</label>
+              <label className="block text-gray-400 mb-2">
+                <span className="flex items-center gap-2">
+                  <FaVenusMars className="text-pink-400" />
+                  Gender
+                </span>
+              </label>
               <select
                 name="gender"
                 value={formData.gender}
@@ -269,7 +312,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
 
           {/* About */}
           <div className="form-control">
-            <label className="block text-gray-400 mb-2">About</label>
+            <label className="block text-gray-400 mb-2">
+              <span className="flex items-center gap-2">
+                <FaInfo className="text-cyan-400" />
+                About
+              </span>
+            </label>
             <textarea
               name="about"
               value={formData.about}
@@ -281,7 +329,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
 
           {/* Skills */}
           <div className="form-control">
-            <label className="block text-gray-400 mb-2">Skills</label>
+            <label className="block text-gray-400 mb-2">
+              <span className="flex items-center gap-2">
+                <FaCode className="text-orange-400" />
+                Skills
+              </span>
+            </label>
             <div className="flex gap-2">
               <input
                 type="text"
@@ -294,8 +347,9 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
               <button
                 type="button"
                 onClick={handleSkillAdd}
-                className="px-6 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors cursor-pointer"
+                className="px-6 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors cursor-pointer flex items-center gap-2"
               >
+                <FaPlus size={14} />
                 Add
               </button>
             </div>
@@ -311,7 +365,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
                     onClick={() => handleSkillRemove(skill)}
                     className="text-white hover:text-gray-200 cursor-pointer"
                   >
-                    ✕
+                    <FaTimes size={12} />
                   </button>
                 </div>
               ))}
@@ -387,9 +441,16 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
                 isLoading
                   ? "bg-gray-500 cursor-not-allowed"
                   : "bg-[#7C3AED] hover:bg-[#6D28D9]"
-              }`}
+              } flex items-center gap-2`}
             >
-              {isLoading ? <ButtonLoader text="Saving..." /> : "Save Changes"}
+              {isLoading ? (
+                <ButtonLoader text="Saving..." />
+              ) : (
+                <>
+                  <FaSave className="text-white" />
+                  Save Changes
+                </>
+              )}
             </button>
           </div>
         </form>

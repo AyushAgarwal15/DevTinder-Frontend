@@ -6,8 +6,21 @@ import { addUserToTheFeed, removeUserFromFeed } from "../utils/feedSlice";
 import UserCard from "./UserCard";
 import { useToast } from "../context/ToastContext";
 import Loader from "./Loader";
-import { motion, AnimatePresence, MotionStyle, Variant } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  MotionStyle,
+  Variant,
+  Variants,
+} from "framer-motion";
 import { AppDispatch, RootState, User } from "../utils/types";
+import {
+  FaChevronLeft,
+  FaChevronRight,
+  FaHeart,
+  FaTimes,
+  FaSync,
+} from "react-icons/fa";
 
 type ExitDirection = "left" | "right" | null;
 
@@ -74,7 +87,7 @@ const Feed: React.FC = () => {
         // Reset exit direction and card exiting state
         setExitDirection(null);
       }, 300);
-    } catch (err) {
+    } catch (err: any) {
       const errorMessage = err?.response?.data || "Failed to accept request";
       toast.error(errorMessage);
       console.error(err);
@@ -86,10 +99,10 @@ const Feed: React.FC = () => {
   }, []);
 
   // Card variants for framer-motion
-  const cardVariants: CardVariants = {
+  const cardVariants: Variants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
-    exit: (direction) => ({
+    exit: (direction: ExitDirection) => ({
       x: direction === "left" ? -500 : direction === "right" ? 500 : 0,
       opacity: 0,
       rotate: direction === "left" ? -20 : direction === "right" ? 20 : 0,
@@ -98,26 +111,48 @@ const Feed: React.FC = () => {
   };
 
   // Guide animation to show swiping
-  const guideVariants = {
+  const guideVariants: Variants = {
     swipeRight: {
       x: [0, 80, 0],
       opacity: [0.5, 1, 0.5],
-      transition: { duration: 2, repeat: 1, repeatType: "reverse" },
+      transition: { duration: 2, repeat: 1, repeatType: "reverse" as const },
     },
     swipeLeft: {
       x: [0, -80, 0],
       opacity: [0.5, 1, 0.5],
-      transition: { duration: 2, repeat: 1, repeatType: "reverse", delay: 4 },
+      transition: {
+        duration: 2,
+        repeat: 1,
+        repeatType: "reverse" as const,
+        delay: 4,
+      },
     },
   };
 
   return (
     <div className="min-h-screen bg-[#1c2030] py-8 px-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-2xl font-bold text-[#7C3AED]">
+            Discover Developers
+          </h2>
+          {!isLoading && (
+            <button
+              onClick={fetchFeed}
+              className="flex items-center gap-2 px-4 py-2 bg-[#252b3d] text-gray-300 hover:bg-[#303952] rounded-lg transition-colors cursor-pointer"
+            >
+              <FaSync className={isLoading ? "animate-spin" : ""} />
+              Refresh Feed
+            </button>
+          )}
+        </div>
+      </div>
+
       {isLoading ? (
         <div className="flex justify-center items-center h-[70vh]">
           <Loader size="large" text="Finding Matches..." />
         </div>
-      ) : feed?.length > 0 ? (
+      ) : feed && feed.length > 0 ? (
         <div className="flex justify-center my-10 h-[550px] relative">
           {/* Visual guide overlay */}
           {showGuide && (
@@ -131,18 +166,7 @@ const Feed: React.FC = () => {
                 >
                   <div className="flex items-center gap-1">
                     <span className="text-sm font-bold">Like</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    <FaHeart className="h-5 w-5" />
                   </div>
                 </motion.div>
 
@@ -153,18 +177,7 @@ const Feed: React.FC = () => {
                   animate="swipeLeft"
                 >
                   <div className="flex items-center gap-1">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    <FaTimes className="h-5 w-5" />
                     <span className="text-sm font-bold">Ignore</span>
                   </div>
                 </motion.div>
@@ -176,7 +189,7 @@ const Feed: React.FC = () => {
             {/* Properly positioned card stack */}
             <div className="relative w-96 h-[550px]">
               {/* Background card first (lower z-index) */}
-              {feed.length > 1 && (
+              {feed && feed.length > 1 && (
                 <motion.div
                   key={feed[1]._id + "-bg"}
                   className="absolute"
@@ -208,28 +221,30 @@ const Feed: React.FC = () => {
               )}
 
               {/* Foreground (active) card */}
-              <motion.div
-                key={feed[0]._id}
-                className="absolute"
-                style={
-                  {
-                    zIndex: 2,
-                    transformOrigin: "center top",
-                    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)",
-                    width: "100%",
-                  } as MotionStyle
-                }
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                variants={cardVariants}
-                custom={exitDirection}
-              >
-                <UserCard
-                  user={feed[0]}
-                  onHandleSendRequest={handleSendRequest}
-                />
-              </motion.div>
+              {feed && feed.length > 0 && (
+                <motion.div
+                  key={feed[0]._id}
+                  className="absolute"
+                  style={
+                    {
+                      zIndex: 2,
+                      transformOrigin: "center top",
+                      boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)",
+                      width: "100%",
+                    } as MotionStyle
+                  }
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={cardVariants}
+                  custom={exitDirection}
+                >
+                  <UserCard
+                    user={feed[0]}
+                    onHandleSendRequest={handleSendRequest}
+                  />
+                </motion.div>
+              )}
             </div>
           </AnimatePresence>
         </div>

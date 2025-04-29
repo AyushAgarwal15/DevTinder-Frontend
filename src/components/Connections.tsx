@@ -8,6 +8,7 @@ import { useToast } from "../context/ToastContext";
 import ConnectionCard from "./ConnectionCard";
 import { Link, useLocation } from "react-router-dom";
 import { RootState } from "../utils/types";
+import { FaSearch, FaUsers, FaSync, FaUserPlus } from "react-icons/fa";
 
 interface Connection {
   _id: string;
@@ -72,35 +73,33 @@ const Connections: React.FC = () => {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-[#7C3AED]">
+            <h2 className="text-2xl font-bold text-[#7C3AED] flex items-center gap-2">
+              <FaUsers className="text-purple-400" />
               Your Connections
             </h2>
             <p className="text-gray-400 mt-1">
               Stay connected with fellow developers
             </p>
           </div>
-          <div className="relative w-full md:w-auto">
-            <input
-              type="text"
-              placeholder="Search connections..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full md:w-64 px-4 py-2 bg-[#252b3d] border border-gray-700 rounded-lg text-gray-200 focus:border-[#7C3AED] focus:outline-none pr-10"
-            />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => fetchConnections(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-[#252b3d] text-gray-300 hover:bg-[#303952] rounded-lg transition-colors cursor-pointer"
+              disabled={isLoading}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              <FaSync className={isLoading ? "animate-spin" : ""} />
+              Refresh
+            </button>
+            <div className="relative w-full md:w-auto">
+              <input
+                type="text"
+                placeholder="Search connections..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full md:w-64 px-4 py-2 bg-[#252b3d] border border-gray-700 rounded-lg text-gray-200 focus:border-[#7C3AED] focus:outline-none pr-10"
               />
-            </svg>
+              <FaSearch className="h-5 w-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            </div>
           </div>
         </div>
 
@@ -116,11 +115,9 @@ const Connections: React.FC = () => {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-16 px-4 bg-[#252b3d] rounded-lg border border-gray-800">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/4861/4861245.png"
-              alt="No connections"
-              className="w-32 h-32 mb-6 opacity-30"
-            />
+            <div className="w-24 h-24 bg-[#1c2030] rounded-full flex items-center justify-center mb-6">
+              <FaUserPlus className="h-12 w-12 text-purple-400 opacity-70" />
+            </div>
             <h3 className="text-xl font-medium text-gray-300 mb-2">
               {searchTerm
                 ? "No matching connections found"
@@ -134,8 +131,9 @@ const Connections: React.FC = () => {
             {!searchTerm && (
               <Link
                 to="/"
-                className="px-6 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors cursor-pointer"
+                className="px-6 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors cursor-pointer flex items-center gap-2"
               >
+                <FaUserPlus className="h-4 w-4" />
                 Find Developers
               </Link>
             )}

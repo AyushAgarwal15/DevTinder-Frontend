@@ -4,6 +4,7 @@ import UserDetailModal from "./UserDetailModal";
 import ConfirmationModal from "./ConfirmationModal";
 import { User } from "../utils/types";
 import { IoEyeOutline } from "react-icons/io5";
+import { FaTimes, FaCheck } from "react-icons/fa";
 
 interface RequestCardProps {
   request: User;
@@ -76,20 +77,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
             disabled={isProcessing}
             className="p-2 rounded-lg border border-gray-600 hover:bg-red-500/10 hover:border-red-500 hover:text-red-500 transition-colors cursor-pointer"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <FaTimes className="h-5 w-5" />
           </button>
           <button
             onClick={() => setConfirmAction({ show: true, status: "accepted" })}
@@ -100,20 +88,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
               <Loader size="small" />
             ) : (
               <>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+                <FaCheck className="h-5 w-5" />
                 Accept
               </>
             )}
