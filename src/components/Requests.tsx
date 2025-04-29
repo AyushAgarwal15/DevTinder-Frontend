@@ -27,8 +27,8 @@ const Requests = () => {
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const fetchRequests = async () => {
-    if (requests) {
+  const fetchRequests = async (force = false): Promise<void> => {
+    if (requests && !force) {
       setIsLoading(false);
       return;
     }
@@ -97,7 +97,7 @@ const Requests = () => {
           </div>
 
           <button
-            onClick={fetchRequests}
+            onClick={() => fetchRequests(true)}
             className="flex items-center gap-2 px-4 py-2 bg-[#252b3d] text-gray-300 hover:bg-[#303952] rounded-lg transition-colors cursor-pointer"
             disabled={isLoading}
           >
