@@ -6,17 +6,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { addConnections } from "../utils/connectionSlice";
 import { useToast } from "../context/ToastContext";
 import ConnectionCard from "./ConnectionCard";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Connections = () => {
   const connections = useSelector((store) => store.connections);
   const dispatch = useDispatch();
   const toast = useToast();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchConnections = async () => {
-    if (connections) {
+  const fetchConnections = async (force = false) => {
+    if (connections && !force) {
       setIsLoading(false);
       return;
     }
@@ -47,7 +48,7 @@ const Connections = () => {
 
   useEffect(() => {
     fetchConnections();
-  }, []);
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen bg-[#1c2030] py-8 px-4">

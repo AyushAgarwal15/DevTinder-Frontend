@@ -4,6 +4,7 @@ import { BASE_URL } from "../utils/constants";
 import { useToast } from "../context/ToastContext";
 import { useEffect, useState } from "react";
 import { addRequests, removeRequests } from "../utils/requestSlice";
+import { removeConnections } from "../utils/connectionSlice";
 import RequestCard from "./RequestCard";
 import Loader from "./Loader";
 
@@ -37,14 +38,22 @@ const Requests = () => {
   const handleReceivedRequest = async (id, status) => {
     setProcessingId(id);
     try {
-      await axios.post(
+      const response = await axios.post(
         BASE_URL + `/request/review/${status}/${id}`,
         {},
         { withCredentials: true }
       );
       dispatch(removeRequests(id));
-      if (status === "accepted") toast.success("Connection request accepted!");
-      if (status === "rejected") toast.success("Connection request rejected!");
+
+      if (status === "accepted") {
+        // Clear connections in Redux to force a refresh when navigating to connections page
+        dispatch(removeConnections());
+        toast.success("Connection request accepted!");
+      }
+
+      if (status === "rejected") {
+        toast.success("Connection request rejected!");
+      }
     } catch (err) {
       const errorMessage = err?.response?.data || "Failed to accept request";
       toast.error(errorMessage);
