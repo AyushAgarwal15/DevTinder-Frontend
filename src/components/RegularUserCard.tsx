@@ -66,11 +66,34 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
   // Check if user has any social links
   const hasSocialLinks = linkedinUrl || githubUrl || portfolioUrl;
 
+  // Modern card style with subtle gradient
+  const cardStyle = {
+    background: "linear-gradient(135deg, #1e293b 0%, #111827 100%)",
+    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)",
+  };
+
+  // Card motion animation
+  const cardAnimation = {
+    initial: { opacity: 0, scale: 0.9 },
+    animate: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.4,
+        ease: "easeOut",
+      },
+    },
+    whileHover: {
+      boxShadow: "0 15px 30px rgba(0, 0, 0, 0.6)",
+      transition: { duration: 0.2 },
+    },
+  };
+
   // Determine if dragging should be allowed
   const isDraggable = enableDrag && onHandleSendRequest !== null;
 
   return (
-    <div className="relative">
+    <div className="relative flex justify-center w-full">
       {/* Overlay for "IGNORE" action */}
       {isDraggable && (
         <motion.div
@@ -92,7 +115,7 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
       )}
 
       <motion.div
-        className={`card w-96 overflow-hidden shadow-xl transition-all duration-300 hover:shadow-2xl bg-[#1c2030] border border-gray-800 ${
+        className={`card w-full max-w-sm sm:max-w-md overflow-hidden rounded-2xl transition-all duration-300 border border-gray-700 ${
           isDraggable ? "cursor-grab active:cursor-grabbing" : "cursor-default"
         }`}
         drag={isDraggable ? "x" : false}
@@ -101,67 +124,76 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
         onDragEnd={isDraggable ? handleDragEnd : undefined}
         style={{
           ...(isDraggable ? { x, rotate } : {}),
+          ...cardStyle,
         }}
         whileDrag={isDraggable ? { scale: 0.98 } : undefined}
         dragTransition={
           isDraggable ? { bounceStiffness: 600, bounceDamping: 20 } : undefined
         }
+        {...cardAnimation}
       >
-        <figure className="relative h-64 overflow-hidden pointer-events-none">
-          <img
-            src={photoUrl}
-            alt={name || "User profile"}
-            className="w-full h-full object-contain"
-            draggable="false"
-          />
+        <figure className="relative h-56 sm:h-60 overflow-hidden pointer-events-none bg-gradient-to-b from-gray-900 to-gray-800">
+          {photoUrl && (
+            <img
+              src={photoUrl}
+              alt={name || "User profile"}
+              className="w-full h-full object-contain object-center"
+              draggable="false"
+            />
+          )}
 
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-4">
             <div className="flex items-center">
               <div>
-                <h2 className="text-2xl font-bold text-white">{name}</h2>
-                <p className="text-white/90 text-sm">
-                  {age}, {gender}
+                <h2 className="text-xl sm:text-2xl font-bold text-white truncate">
+                  {name}
+                </h2>
+                <p className="text-gray-300/90 text-xs sm:text-sm">
+                  {age ? `${age}, ` : ""}
+                  {gender || "Developer"}
                 </p>
               </div>
             </div>
           </div>
         </figure>
 
-        <div className="card-body p-5 pointer-events-none">
-          <p className="text-gray-400 mb-3">{about}</p>
+        <div className="card-body p-4 sm:p-5 pointer-events-none">
+          <p className="text-gray-300 text-sm mb-3 line-clamp-3">{about}</p>
 
           {skills && skills.length > 0 && (
             <div className="mb-4">
-              <p className="text-sm font-semibold text-gray-400 mb-2">Skills</p>
+              <p className="text-sm font-semibold text-gray-300 mb-2">Skills</p>
               <div className="flex flex-wrap gap-2">
-                {skills.map((skill, index) => (
+                {skills.slice(0, 5).map((skill, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-[#7C3AED] text-white rounded-full text-xs"
+                    className="px-2 py-1 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full text-xs shadow-md"
                   >
                     {skill}
                   </span>
                 ))}
+                {skills.length > 5 && (
+                  <span className="px-2 py-1 bg-gray-600 text-white shadow-md rounded-full text-xs">
+                    +{skills.length - 5} more
+                  </span>
+                )}
               </div>
             </div>
           )}
 
           {/* Social Links */}
           {hasSocialLinks && (
-            <div className="mb-4">
-              <p className="text-sm font-semibold text-gray-400 mb-2">
-                Connect
-              </p>
+            <div className="mb-3">
               <div className="flex gap-3">
                 {linkedinUrl && (
                   <a
                     href={linkedinUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-400 pointer-events-auto"
+                    className="text-blue-500 hover:text-blue-400 pointer-events-auto transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <FaLinkedin size={20} />
+                    <FaLinkedin size={18} />
                   </a>
                 )}
 
@@ -170,10 +202,10 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
                     href={githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-200 hover:text-gray-100 pointer-events-auto"
+                    className="text-gray-200 hover:text-white pointer-events-auto transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <FaGithub size={20} />
+                    <FaGithub size={18} />
                   </a>
                 )}
 
@@ -182,10 +214,10 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
                     href={portfolioUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-green-500 hover:text-green-400 pointer-events-auto"
+                    className="text-green-500 hover:text-green-400 pointer-events-auto transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <FaGlobe size={20} />
+                    <FaGlobe size={18} />
                   </a>
                 )}
               </div>
@@ -193,24 +225,26 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
           )}
 
           {onHandleSendRequest && (
-            <div className="card-actions justify-end mt-2 pointer-events-auto">
+            <div className="card-actions justify-end mt-1 pointer-events-auto">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onHandleSendRequest(_id, "ignored");
                 }}
-                className="w-12 h-12 rounded-full bg-red-500 hover:bg-red-600 transition-colors flex items-center justify-center text-white border-none cursor-pointer"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-500 hover:bg-red-600 shadow-lg shadow-red-800/20 transition-all hover:scale-105 flex items-center justify-center text-white border-none cursor-pointer"
+                aria-label="Ignore"
               >
-                <FaTimes className="h-6 w-6" />
+                <FaTimes className="h-5 w-5 sm:h-6 sm:w-6" />
               </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onHandleSendRequest(_id, "interested");
                 }}
-                className="w-12 h-12 rounded-full bg-[#7C3AED] hover:bg-[#6D28D9] transition-colors flex items-center justify-center text-white border-none cursor-pointer"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#7C3AED] hover:bg-[#6D28D9] shadow-lg shadow-purple-900/30 transition-all hover:scale-105 flex items-center justify-center text-white border-none cursor-pointer"
+                aria-label="Like"
               >
-                <FaHeart className="h-6 w-6" />
+                <FaHeart className="h-5 w-5 sm:h-6 sm:w-6" />
               </button>
             </div>
           )}

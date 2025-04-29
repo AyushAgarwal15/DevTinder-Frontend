@@ -67,11 +67,11 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
   // Check if user has any social links
   const hasSocialLinks = linkedinUrl || githubUrl || portfolioUrl;
 
-  // Premium card style with golden gradient
+  // Modern card style with refined gradient
   const cardStyle = {
-    background: "linear-gradient(135deg, #000000 0%, #1c2030 100%)",
-    boxShadow: "0 0 20px rgba(255, 215, 0, 0.3)",
-    border: "1px solid rgba(255, 215, 0, 0.5)",
+    background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+    boxShadow: "0 10px 30px rgba(15, 23, 42, 0.7)",
+    border: "1px solid rgba(255, 215, 0, 0.3)",
   };
 
   // Premium card motion animation
@@ -86,7 +86,7 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
       },
     },
     whileHover: {
-      boxShadow: "0 0 25px rgba(255, 215, 0, 0.5)",
+      boxShadow: "0 15px 35px rgba(255, 215, 0, 0.3)",
       transition: { duration: 0.2 },
     },
   };
@@ -95,11 +95,11 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
   const isDraggable = enableDrag && onHandleSendRequest !== null;
 
   return (
-    <div className="relative">
+    <div className="relative flex justify-center w-full">
       {/* Premium badge */}
-      <div className="absolute top-2 right-2 z-10 bg-gradient-to-r from-amber-500 to-yellow-300 px-2 py-1 rounded-full flex items-center text-xs font-bold shadow-lg">
+      <div className="absolute top-3 right-3 z-10 bg-gradient-to-r from-amber-500 to-yellow-300 px-2 py-1 rounded-full flex items-center text-xs font-bold shadow-lg">
         <RiVipCrownFill className="text-amber-100 mr-1" />
-        <span className="text-shimmer">DEVELOPER</span>
+        <span className="text-black font-bold">FOUNDER</span>
       </div>
 
       {/* Overlay for "IGNORE" action */}
@@ -123,7 +123,7 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
       )}
 
       <motion.div
-        className={`card w-96 overflow-hidden shadow-xl transition-all duration-300 hover:shadow-2xl bg-[#1c2030] border border-gray-800 ${
+        className={`card w-full max-w-sm sm:max-w-md overflow-hidden rounded-2xl transition-all duration-300 ${
           isDraggable ? "cursor-grab active:cursor-grabbing" : "cursor-default"
         } premium-card`}
         drag={isDraggable ? "x" : false}
@@ -140,97 +140,98 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
         }
         {...cardAnimation}
       >
-        <figure className="relative h-64 overflow-hidden pointer-events-none">
+        <figure className="relative h-56 sm:h-60 overflow-hidden pointer-events-none bg-gradient-to-b from-slate-900 to-slate-800">
           <div className="absolute top-0 left-0 w-full h-full z-10">
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-yellow-500/10 to-transparent"></div>
             <div className="absolute -top-24 -right-24 w-48 h-48 bg-yellow-500/20 rounded-full blur-xl"></div>
             <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-purple-500/20 rounded-full blur-xl"></div>
           </div>
 
-          <img
-            src={photoUrl}
-            alt={name || "User profile"}
-            className="w-full h-full object-contain scale-95 filter contrast-110"
-            draggable="false"
-          />
+          {photoUrl && (
+            <img
+              src={photoUrl}
+              alt={name || "User profile"}
+              className="w-full h-full object-contain object-center scale-100"
+              draggable="false"
+            />
+          )}
 
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-4">
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent p-4">
             <div className="flex items-center">
               <div>
-                <h2 className="text-2xl font-bold text-yellow-400">
+                <h2 className="text-xl sm:text-2xl font-bold text-amber-400 truncate">
                   {name}
                   <span className="ml-2 inline-block animate-pulse">👑</span>
                 </h2>
-                <p className="text-yellow-200/90 text-sm">
-                  {age}, {gender}
+                <p className="text-amber-200/90 text-xs sm:text-sm">
+                  {age ? `${age}, ` : ""}
+                  {gender || "Developer"}
                 </p>
-              </div>
-
-              <div className="ml-auto bg-gradient-to-r from-yellow-600 to-yellow-400 text-black text-xs px-2 py-1 rounded-full font-bold border border-yellow-300 shadow-lg">
-                FOUNDER
               </div>
             </div>
           </div>
         </figure>
 
-        <div className="card-body p-5 pointer-events-none bg-gradient-to-b from-[#1c2030] to-[#1c1e28]">
-          <div className="mb-3 flex">
-            <div className="bg-gradient-to-r from-purple-600 to-blue-500 mr-2 px-2 py-0.5 rounded text-xs text-white font-semibold">
+        <div className="card-body p-4 sm:p-5 pointer-events-none bg-gradient-to-b from-slate-900 to-slate-800">
+          <div className="mb-3 flex flex-wrap gap-2">
+            <div className="bg-gradient-to-r from-purple-600 to-blue-500 px-2 py-0.5 rounded text-xs text-white font-semibold">
               DevTinder Creator
             </div>
             <div className="bg-gradient-to-r from-gray-700 to-gray-600 px-2 py-0.5 rounded text-xs text-white font-semibold">
-              Full-Stack Developer
+              Software Engineer
             </div>
           </div>
 
-          <p className="text-gray-300 mb-3">
+          <p className="text-gray-300 text-sm mb-3 line-clamp-3">
             {about ||
               "Creator and lead developer of DevTinder - connecting developers worldwide!"}
           </p>
 
           <div className="mb-4">
-            <p className="text-sm font-semibold text-yellow-400 mb-2">Skills</p>
+            <p className="text-sm font-semibold text-amber-400 mb-2">Skills</p>
             <div className="flex flex-wrap gap-2">
               {skills && skills.length > 0 ? (
-                skills.map((skill, index) => (
+                skills.slice(0, 5).map((skill, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-gradient-to-r from-yellow-600 to-amber-500 text-black shadow-md shadow-amber-900/20 rounded-full text-xs"
+                    className="px-2 py-1 bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-md shadow-amber-900/20 rounded-full text-xs"
                   >
                     {skill}
                   </span>
                 ))
               ) : (
                 <>
-                  <span className="px-3 py-1 bg-gradient-to-r from-yellow-600 to-amber-500 text-black shadow-md shadow-amber-900/20 rounded-full text-xs">
+                  <span className="px-2 py-1 bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-md shadow-amber-900/20 rounded-full text-xs">
                     React
                   </span>
-                  <span className="px-3 py-1 bg-gradient-to-r from-yellow-600 to-amber-500 text-black shadow-md shadow-amber-900/20 rounded-full text-xs">
+                  <span className="px-2 py-1 bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-md shadow-amber-900/20 rounded-full text-xs">
                     TypeScript
                   </span>
-                  <span className="px-3 py-1 bg-gradient-to-r from-yellow-600 to-amber-500 text-black shadow-md shadow-amber-900/20 rounded-full text-xs">
+                  <span className="px-2 py-1 bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-md shadow-amber-900/20 rounded-full text-xs">
                     Node.js
                   </span>
                 </>
+              )}
+              {skills && skills.length > 5 && (
+                <span className="px-2 py-1 bg-gradient-to-r from-slate-600 to-slate-500 text-white shadow-md rounded-full text-xs">
+                  +{skills.length - 5} more
+                </span>
               )}
             </div>
           </div>
 
           {/* Social Links */}
-          <div className="mb-4">
-            <p className="text-sm font-semibold text-yellow-400 mb-2">
-              Connect
-            </p>
+          <div className="mb-3">
             <div className="flex gap-3">
               <a
                 href={linkedinUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-yellow-400 hover:text-blue-400 pointer-events-auto"
+                className="text-amber-400 hover:text-blue-400 pointer-events-auto transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
                 <FaLinkedin
-                  size={20}
+                  size={18}
                   className="filter drop-shadow-[0_0_2px_rgba(255,215,0,0.5)]"
                 />
               </a>
@@ -239,11 +240,11 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
                 href={githubUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-yellow-400 hover:text-gray-100 pointer-events-auto"
+                className="text-amber-400 hover:text-gray-100 pointer-events-auto transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
                 <FaGithub
-                  size={20}
+                  size={18}
                   className="filter drop-shadow-[0_0_2px_rgba(255,215,0,0.5)]"
                 />
               </a>
@@ -252,42 +253,38 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
                 href={portfolioUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-yellow-400 hover:text-green-400 pointer-events-auto"
+                className="text-amber-400 hover:text-green-400 pointer-events-auto transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
                 <FaGlobe
-                  size={20}
+                  size={18}
                   className="filter drop-shadow-[0_0_2px_rgba(255,215,0,0.5)]"
                 />
               </a>
             </div>
           </div>
 
-          <div className="border-t border-yellow-700/30 mt-3 pt-3">
-            <p className="text-yellow-400 text-xs italic">
-              "Connecting developers worldwide through innovation and passion."
-            </p>
-          </div>
-
           {onHandleSendRequest && (
-            <div className="card-actions justify-end mt-2 pointer-events-auto">
+            <div className="card-actions justify-end mt-1 pointer-events-auto">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onHandleSendRequest(_id, "ignored");
                 }}
-                className="w-12 h-12 rounded-full bg-red-600 hover:bg-red-700 shadow-lg shadow-red-800/30 transition-colors flex items-center justify-center text-white border-none cursor-pointer"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-600 hover:bg-red-700 shadow-lg shadow-red-800/30 transition-all hover:scale-105 flex items-center justify-center text-white border-none cursor-pointer"
+                aria-label="Ignore"
               >
-                <FaTimes className="h-6 w-6" />
+                <FaTimes className="h-5 w-5 sm:h-6 sm:w-6" />
               </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onHandleSendRequest(_id, "interested");
                 }}
-                className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 shadow-lg shadow-amber-800/30 transition-colors flex items-center justify-center text-white border-none cursor-pointer"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-lg shadow-amber-800/30 transition-all hover:scale-105 flex items-center justify-center text-white border-none cursor-pointer"
+                aria-label="Like"
               >
-                <FaHeart className="h-6 w-6" />
+                <FaHeart className="h-5 w-5 sm:h-6 sm:w-6" />
               </button>
             </div>
           )}
