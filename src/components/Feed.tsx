@@ -6,16 +6,26 @@ import { addUserToTheFeed, removeUserFromFeed } from "../utils/feedSlice";
 import UserCard from "./UserCard";
 import { useToast } from "../context/ToastContext";
 import Loader from "./Loader";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, MotionStyle, Variant } from "framer-motion";
+import { AppDispatch, RootState, User } from "../utils/types";
 
-const Feed = () => {
-  const user = useSelector((store) => store.user);
-  const feed = useSelector((store) => store.feed);
-  const dispatch = useDispatch();
+type ExitDirection = "left" | "right" | null;
+
+interface CardVariants {
+  hidden: Variant;
+  visible: Variant;
+  exit: (direction: ExitDirection) => Variant;
+}
+
+const Feed: React.FC = () => {
+  const user = useSelector((store: RootState) => store.user);
+  const feed = useSelector((store: RootState) => store.feed);
+  const dispatch = useDispatch<AppDispatch>();
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(true);
-  const [exitDirection, setExitDirection] = useState(null);
+  const [exitDirection, setExitDirection] = useState<ExitDirection>(null);
   const [showGuide, setShowGuide] = useState(true);
+
   // Auto-hide guide after a few seconds
   useEffect(() => {
     if (showGuide) {
@@ -26,11 +36,11 @@ const Feed = () => {
     }
   }, [showGuide]);
 
-  const fetchFeed = async () => {
+  const fetchFeed = async (): Promise<void> => {
     if (!user) return;
     try {
       setIsLoading(true);
-      const res = await axios.get(BASE_URL + "/feed", {
+      const res = await axios.get<{ data: User[] }>(`${BASE_URL}/feed`, {
         withCredentials: true,
       });
       dispatch(addUserToTheFeed(res?.data?.data));
@@ -42,7 +52,10 @@ const Feed = () => {
     }
   };
 
-  const handleSendRequest = async (id, status) => {
+  const handleSendRequest = async (
+    id: string,
+    status: string
+  ): Promise<void> => {
     try {
       // Set exit direction for animation
       setExitDirection(status === "interested" ? "right" : "left");
@@ -50,7 +63,7 @@ const Feed = () => {
       // Wait for animation and then make API call
       setTimeout(async () => {
         await axios.post(
-          BASE_URL + `/request/send/${status}/${id}`,
+          `${BASE_URL}/request/send/${status}/${id}`,
           {},
           { withCredentials: true }
         );
@@ -73,7 +86,7 @@ const Feed = () => {
   }, []);
 
   // Card variants for framer-motion
-  const cardVariants = {
+  const cardVariants: CardVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
     exit: (direction) => ({
@@ -167,17 +180,19 @@ const Feed = () => {
                 <motion.div
                   key={feed[1]._id + "-bg"}
                   className="absolute"
-                  style={{
-                    zIndex: 1,
-                    top: "25px",
-                    left: "-15px",
-                    filter: "brightness(0.85)",
-                    transform: "scale(0.95) rotate(-6deg)",
-                    transformOrigin: "center top",
-                    boxShadow: "0 7px 15px rgba(0, 0, 0, 0.3)",
-                    transition: "all 0.3s ease-in-out",
-                    width: "100%",
-                  }}
+                  style={
+                    {
+                      zIndex: 1,
+                      top: "25px",
+                      left: "-15px",
+                      filter: "brightness(0.85)",
+                      transform: "scale(0.95) rotate(-6deg)",
+                      transformOrigin: "center top",
+                      boxShadow: "0 7px 15px rgba(0, 0, 0, 0.3)",
+                      transition: "all 0.3s ease-in-out",
+                      width: "100%",
+                    } as MotionStyle
+                  }
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{
                     opacity: 1,
@@ -196,12 +211,14 @@ const Feed = () => {
               <motion.div
                 key={feed[0]._id}
                 className="absolute"
-                style={{
-                  zIndex: 2,
-                  transformOrigin: "center top",
-                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)",
-                  width: "100%",
-                }}
+                style={
+                  {
+                    zIndex: 2,
+                    transformOrigin: "center top",
+                    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)",
+                    width: "100%",
+                  } as MotionStyle
+                }
                 initial="hidden"
                 animate="visible"
                 exit="exit"

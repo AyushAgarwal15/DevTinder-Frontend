@@ -1,7 +1,7 @@
 import React from "react";
 import Logo from "./Logo";
 
-const Footer = () => {
+const Footer: React.FC = () => {
   return (
     <footer className="bg-[#1c2030] text-gray-300 py-4 mt-auto border-t border-gray-800">
       <div className="container mx-auto px-4 md:px-6 max-w-7xl flex flex-col md:flex-row items-center md:justify-between gap-6">

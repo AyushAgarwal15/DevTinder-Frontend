@@ -7,28 +7,45 @@ import { addConnections } from "../utils/connectionSlice";
 import { useToast } from "../context/ToastContext";
 import ConnectionCard from "./ConnectionCard";
 import { Link, useLocation } from "react-router-dom";
+import { RootState } from "../utils/types";
 
-const Connections = () => {
-  const connections = useSelector((store) => store.connections);
+interface Connection {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  photoUrl?: string;
+  about?: string;
+  age?: number;
+  gender?: string;
+  skills?: string[];
+  linkedinUrl?: string;
+  githubUrl?: string;
+  portfolioUrl?: string;
+}
+
+const Connections: React.FC = () => {
+  const connections = useSelector((store: RootState) => store.connections) as
+    | Connection[]
+    | null;
   const dispatch = useDispatch();
   const toast = useToast();
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const fetchConnections = async (force = false) => {
+  const fetchConnections = async (force = false): Promise<void> => {
     if (connections && !force) {
       setIsLoading(false);
       return;
     }
     try {
       setIsLoading(true);
-      const res = await axios.get(BASE_URL + "/user/connections", {
+      const res = await axios.get(`${BASE_URL}/user/connections`, {
         withCredentials: true,
       });
       dispatch(addConnections(res?.data?.data));
       setIsLoading(false);
-    } catch (err) {
+    } catch (err: any) {
       const errorMessage = err?.response?.data || "Something went wrong";
       toast.error(errorMessage);
       console.error(err);
@@ -37,11 +54,11 @@ const Connections = () => {
   };
 
   const filteredConnections = connections?.filter(
-    (connection) =>
+    (connection: Connection) =>
       connection.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       connection.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (connection.skills &&
-        connection.skills.some((skill) =>
+        connection.skills.some((skill: string) =>
           skill.toLowerCase().includes(searchTerm.toLowerCase())
         ))
   );
@@ -91,9 +108,9 @@ const Connections = () => {
           <div className="flex justify-center items-center py-20">
             <Loader size="large" text="Loading connections..." />
           </div>
-        ) : filteredConnections.length > 0 ? (
+        ) : filteredConnections && filteredConnections.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredConnections.map((connection) => (
+            {filteredConnections.map((connection: Connection) => (
               <ConnectionCard key={connection._id} connection={connection} />
             ))}
           </div>

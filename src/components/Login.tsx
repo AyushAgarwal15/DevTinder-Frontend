@@ -9,17 +9,25 @@ import ButtonLoader from "./ButtonLoader";
 import { addRequests } from "../utils/requestSlice";
 import Logo from "./Logo";
 import authThumbnail from "../assets/images/auth_thumbnail.jpeg";
+import { RootState } from "../utils/types";
 
-const Login = () => {
-  const [emailId, setEmail] = useState("guestuser@gmail.com");
-  const [password, setPassword] = useState("@Guest.1234");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+const Login: React.FC = () => {
+  const [emailId, setEmail] = useState<string>("guestuser@gmail.com");
+  const [password, setPassword] = useState<string>("@Guest.1234");
+  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
-  const user = useSelector((store) => store.user);
+  const user = useSelector((store: RootState) => store.user) as User | null;
 
   // Check if user is already authenticated
   useEffect(() => {
@@ -58,7 +66,7 @@ const Login = () => {
         }
 
         // Then verify with the server
-        const res = await axios.get(BASE_URL + "/profile/view", {
+        const res = await axios.get(`${BASE_URL}/profile/view`, {
           withCredentials: true,
           signal: controller.signal,
         });
@@ -74,7 +82,7 @@ const Login = () => {
         clearTimeout(timeoutId);
 
         // If aborted or 401 or any other error, user is not authenticated
-        if (error.name === "AbortError") {
+        if (error instanceof DOMException && error.name === "AbortError") {
           console.log("Auth check aborted due to timeout");
         } else {
           console.log("User not authenticated, showing login page");
@@ -91,9 +99,9 @@ const Login = () => {
     checkAuthStatus();
   }, [dispatch, navigate, user]);
 
-  const fetchRequests = async () => {
+  const fetchRequests = async (): Promise<void> => {
     try {
-      const res = await axios.get(BASE_URL + "/user/requests/received", {
+      const res = await axios.get(`${BASE_URL}/user/requests/received`, {
         withCredentials: true,
       });
       dispatch(addRequests(res?.data?.data));
@@ -102,13 +110,13 @@ const Login = () => {
     }
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (): Promise<void> => {
     try {
       setIsLoading(true);
       setError("");
 
       const res = await axios.post(
-        BASE_URL + "/login",
+        `${BASE_URL}/login`,
         {
           emailId,
           password,
@@ -121,7 +129,7 @@ const Login = () => {
       // Fetching requests after successful login so that I can show the request count on entering in the app
       fetchRequests();
       navigate("/");
-    } catch (err) {
+    } catch (err: any) {
       const errorMessage = err?.response?.data || "Something went wrong";
       setError(errorMessage);
       toast.error(errorMessage);

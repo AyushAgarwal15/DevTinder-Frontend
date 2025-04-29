@@ -4,25 +4,48 @@ import React, {
   useEffect,
   useRef,
   useState,
+  ReactNode,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Socket } from "socket.io-client";
 import {
   createSocketConnection,
   ensureSocketConnected,
   resetSocketConnection,
 } from "../utils/socket";
 import { addNotification } from "../utils/messageNotificationsSlice";
+import { RootState, AppDispatch, User } from "../utils/types";
+
+interface MessageNotification {
+  senderId: {
+    _id: string;
+    firstName?: string;
+    lastName?: string;
+    photoUrl?: string;
+  };
+  text: string;
+  createdAt?: string;
+}
+
+interface SocketContextType {
+  socket: Socket | null;
+  isConnected: boolean;
+}
 
 // Create context
-const SocketContext = createContext(null);
+const SocketContext = createContext<SocketContextType | null>(null);
 
 // Custom hook to use socket context
 export const useSocket = () => useContext(SocketContext);
 
-export const SocketProvider = ({ children }) => {
-  const socketRef = useRef(null);
-  const user = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+interface SocketProviderProps {
+  children: ReactNode;
+}
+
+export const SocketProvider = ({ children }: SocketProviderProps) => {
+  const socketRef = useRef<Socket | null>(null);
+  const user = useSelector((state: RootState) => state.user) as User | null;
+  const dispatch = useDispatch<AppDispatch>();
   const [isConnected, setIsConnected] = useState(false);
 
   // Initialize socket connection
@@ -43,16 +66,15 @@ export const SocketProvider = ({ children }) => {
     if (!socketRef.current || !user) return;
 
     // Function to handle messageNotification event
-    const handleMessageNotification = (message) => {
+    const handleMessageNotification = (message: MessageNotification) => {
       console.log("✉️ Notification received:", message);
 
       if (message.senderId && message.senderId._id !== user._id) {
         dispatch(
           addNotification({
             userId: message.senderId._id,
-            firstName: message.senderId.firstName || "User",
-            lastName: message.senderId.lastName || "",
-            photoUrl: message.senderId.photoUrl || "",
+            name: message.senderId.firstName || "User",
+            profilePic: message.senderId.photoUrl,
             lastMessage: message.text,
             timestamp: message.createdAt || new Date().toISOString(),
           })

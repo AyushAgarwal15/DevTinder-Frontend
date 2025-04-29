@@ -11,25 +11,44 @@ import { resetSocketConnection } from "../utils/socket";
 import { useToast } from "../context/ToastContext";
 import Logo from "./Logo";
 import Messages from "./Messages";
+import { RootState } from "../utils/types";
 
-const NavBar = () => {
-  const user = useSelector((store) => store.user);
-  const requests = useSelector((store) => store.requests);
-  const { unreadCount } = useSelector((store) => store.messageNotifications);
+interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  photoUrl?: string;
+  email?: string;
+}
+
+interface Request {
+  _id: string;
+  fromUserId: any;
+  toUserId: string;
+}
+
+const NavBar: React.FC = () => {
+  const user = useSelector((store: RootState) => store.user) as User | null;
+  const requests = useSelector((store: RootState) => store.requests) as
+    | Request[]
+    | null;
+  const { unreadCount } = useSelector(
+    (store: RootState) => store.messageNotifications
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
   const location = useLocation();
 
-  const handleLogout = async () => {
+  const handleLogout = async (): Promise<void> => {
     try {
       // Reset socket connection first
       resetSocketConnection();
 
       // Then, make the API request and clear the Redux store
-      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
+      await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true });
       dispatch(removeUser());
-      dispatch(removeRequests());
+      dispatch(removeRequests(null));
       dispatch(removeConnections());
       dispatch(removeFeed());
       dispatch(removeAllNotifications());
@@ -44,13 +63,15 @@ const NavBar = () => {
   };
 
   // Check if a path is active
-  const isActive = (path) => {
+  const isActive = (path: string): boolean => {
     return location.pathname === path;
   };
 
   // Close dropdown function
-  const closeDropdown = () => {
-    document.activeElement.blur();
+  const closeDropdown = (): void => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
   };
 
   return (
@@ -79,9 +100,9 @@ const NavBar = () => {
               }`}
             >
               Requests
-              {requests?.length > 0 && (
+              {requests && requests.length > 0 && (
                 <span className="ml-1 px-1.5 py-0.5 text-xs bg-[#7C3AED] text-white rounded-full">
-                  {requests?.length}
+                  {requests.length}
                 </span>
               )}
             </Link>
@@ -149,7 +170,7 @@ const NavBar = () => {
               <div className="flex items-center gap-3">
                 <div className="hidden md:block text-right">
                   <p className="text-sm font-semibold text-gray-200">
-                    {user?.firstName} {user?.lastName}
+                    {user.firstName} {user.lastName}
                   </p>
                   <p className="text-xs text-gray-400">Developer</p>
                 </div>
@@ -159,8 +180,8 @@ const NavBar = () => {
                   className="w-10 h-10 rounded-full border-2 border-[#7C3AED] overflow-hidden hover:border-[#6D28D9] transition-all duration-300 cursor-pointer"
                 >
                   <img
-                    alt={`${user?.firstName}'s profile`}
-                    src={user?.photoUrl || "https://via.placeholder.com/150"}
+                    alt={`${user.firstName}'s profile`}
+                    src={user.photoUrl || "https://via.placeholder.com/150"}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -257,9 +278,9 @@ const NavBar = () => {
                         />
                       </svg>
                       <span className="ml-3">Requests</span>
-                      {requests?.length > 0 && (
+                      {requests && requests.length > 0 && (
                         <span className="ml-1 px-1.5 py-0.5 text-xs bg-[#7C3AED] text-white rounded-full">
-                          {requests?.length}
+                          {requests.length}
                         </span>
                       )}
                     </Link>

@@ -6,7 +6,25 @@ import { removeConnection } from "../utils/connectionSlice";
 import { BASE_URL } from "../utils/constants";
 import { useToast } from "../context/ToastContext";
 
-const ConnectionCard = ({ connection }) => {
+interface Connection {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  photoUrl?: string;
+  about?: string;
+  age?: number;
+  gender?: string;
+  skills?: string[];
+  linkedinUrl?: string;
+  githubUrl?: string;
+  portfolioUrl?: string;
+}
+
+interface ConnectionCardProps {
+  connection: Connection;
+}
+
+const ConnectionCard: React.FC<ConnectionCardProps> = ({ connection }) => {
   const {
     _id,
     firstName,
@@ -21,15 +39,15 @@ const ConnectionCard = ({ connection }) => {
     portfolioUrl,
   } = connection;
 
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [isRemoving, setIsRemoving] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState<boolean>(false);
+  const [isRemoving, setIsRemoving] = useState<boolean>(false);
   const dispatch = useDispatch();
   const toast = useToast();
 
   // Check if user has any social links
   const hasSocialLinks = linkedinUrl || githubUrl || portfolioUrl;
 
-  const handleRemoveConnection = async () => {
+  const handleRemoveConnection = async (): Promise<void> => {
     try {
       setIsRemoving(true);
       await axios.delete(`${BASE_URL}/user/connections/${_id}`, {
@@ -39,7 +57,7 @@ const ConnectionCard = ({ connection }) => {
       dispatch(removeConnection(_id));
       toast.success(`Removed connection with ${firstName} ${lastName}`);
       setShowConfirmDialog(false);
-    } catch (err) {
+    } catch (err: any) {
       const errorMessage =
         err?.response?.data?.message || "Failed to remove connection";
       toast.error(errorMessage);
@@ -128,8 +146,9 @@ const ConnectionCard = ({ connection }) => {
               alt={`${firstName} ${lastName}`}
               className="w-full h-full object-cover"
               onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "https://via.placeholder.com/150?text=Dev";
+                const target = e.target as HTMLImageElement;
+                target.onerror = null;
+                target.src = "https://via.placeholder.com/150?text=Dev";
               }}
             />
           </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Outlet, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,29 +8,31 @@ import NavBar from "./NavBar";
 import Footer from "./Footer";
 import { useToast } from "../context/ToastContext";
 import Loader from "./Loader";
+import { AppDispatch, RootState, User } from "../utils/types";
 
-const Body = () => {
-  const dispatch = useDispatch();
+const Body: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const user = useSelector((store) => store.user);
+  const user = useSelector((store: RootState) => store.user);
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchUser = async () => {
+  const fetchUser = async (): Promise<void> => {
     if (user) {
       setIsLoading(false);
       return;
     }
     try {
       setIsLoading(true);
-      const res = await axios.get(BASE_URL + "/profile/view", {
+      const res = await axios.get<User>(`${BASE_URL}/profile/view`, {
         withCredentials: true,
       });
       dispatch(addUser(res.data));
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
-      if (err.response && err.response.status === 401) {
+      const error = err as AxiosError;
+      if (error.response && error.response.status === 401) {
         toast.info("Please login to continue");
         navigate("/login");
       } else {

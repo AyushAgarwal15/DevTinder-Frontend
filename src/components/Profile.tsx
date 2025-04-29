@@ -2,10 +2,17 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import EditProfile from "./EditProfile";
 import UserCard from "./UserCard";
+import { RootState, User } from "../utils/types";
 
-const Profile = () => {
-  const user = useSelector((store) => store.user);
+const Profile: React.FC = () => {
+  const user = useSelector((store: RootState) => store.user);
   const [isEditing, setIsEditing] = useState(true);
+
+  // Dummy handler for UserCard to satisfy its props requirement
+  const handleProfileViewOnly = (_id: string, _action: string) => {
+    // This is a view-only card, no action needed
+    console.log("Profile view only, no action taken");
+  };
 
   return (
     <div className="min-h-screen bg-[#1c2030] py-8 px-4">
@@ -55,7 +62,7 @@ const Profile = () => {
           <EditProfile user={user} />
         ) : (
           <div className="flex justify-center">
-            <UserCard user={user} />
+            <UserCard user={user} onHandleSendRequest={handleProfileViewOnly} />
           </div>
         )}
       </div>

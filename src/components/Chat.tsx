@@ -1,29 +1,69 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { createSocketConnection } from "../utils/socket";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { markAsRead } from "../utils/messageNotificationsSlice";
+import { RootState, AppDispatch } from "../utils/types";
+import { Socket } from "socket.io-client";
 
 // Default avatar for fallback instead of external placeholder
 const DEFAULT_AVATAR =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666666'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
 
-const Chat = () => {
-  const user = useSelector((store) => store.user);
+// Define our own User interface that matches the actual structure used in the app
+interface User {
+  _id: string;
+  firstName: string;
+  lastName?: string;
+  photoUrl?: string;
+  age?: number;
+  gender?: string;
+  emailId?: string;
+  skills?: string[];
+}
+
+interface TargetUser {
+  _id: string;
+  firstName: string;
+  lastName?: string;
+  photoUrl?: string;
+  age?: number;
+  gender?: string;
+}
+
+interface MessageSender {
+  _id: string;
+  firstName?: string;
+  lastName?: string;
+  photoUrl?: string;
+  age?: number;
+}
+
+interface Message {
+  _id: string;
+  senderId: MessageSender | string;
+  text: string;
+  createdAt?: string;
+  timestamp?: string;
+  updatedAt?: string;
+  sender?: string;
+}
+
+const Chat: React.FC = () => {
+  const user = useSelector((store: RootState) => store.user) as User | null;
   const userId = user?._id;
-  const { targetUserId } = useParams();
-  const [messages, setMessages] = useState([]);
-  const [chatData, setChatData] = useState(null);
+  const { targetUserId = "" } = useParams<{ targetUserId: string }>();
+  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [targetUser, setTargetUser] = useState(null);
+  const [targetUser, setTargetUser] = useState<TargetUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const socketRef = useRef(null);
-  const messagesEndRef = useRef(null);
+  const socketRef = useRef<Socket | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const hasInitializedRef = useRef(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   // Scroll to bottom of messages
   const scrollToBottom = () => {
@@ -57,12 +97,11 @@ const Chat = () => {
 
   const fetchChats = async () => {
     try {
-      const response = await axios.get(BASE_URL + "/chat/" + targetUserId, {
+      if (!targetUserId) return;
+
+      const response = await axios.get(`${BASE_URL}/chat/${targetUserId}`, {
         withCredentials: true,
       });
-
-      // Store the whole chat data
-      setChatData(response.data);
 
       // Extract messages from the response
       if (response.data && Array.isArray(response.data.messages)) {
@@ -79,11 +118,11 @@ const Chat = () => {
     fetchChats();
   }, [targetUserId]);
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !socketRef.current) return;
 
-    socketRef?.current?.emit("sendMessage", {
+    socketRef.current.emit("sendMessage", {
       firstName: user?.firstName,
       userId,
       targetUserId,
@@ -92,9 +131,9 @@ const Chat = () => {
 
     // Add message to UI immediately (optimistic update)
     // Format matches the expected structure from API
-    const newMsg = {
+    const newMsg: Message = {
       senderId: {
-        _id: userId,
+        _id: userId || "",
         firstName: user?.firstName,
         lastName: user?.lastName,
         photoUrl: user?.photoUrl,
@@ -163,7 +202,7 @@ const Chat = () => {
     socketRef.current.off("userJoined");
 
     // Listen for errors
-    socketRef.current.on("error", (error) => {
+    socketRef.current.on("error", (error: any) => {
       console.error("Socket error in Chat:", error);
       // Optionally show an error message to the user
     });
@@ -177,18 +216,23 @@ const Chat = () => {
     });
 
     // Listen for incoming messages
-    socketRef.current.on("receivedMessage", (message) => {
+    socketRef.current.on("receivedMessage", (message: Message) => {
       console.log("Received message in Chat component:", message);
 
       // Only add the received message if it's not already added via optimistic update
-      if (message.senderId && message.senderId._id !== userId) {
+      if (
+        message.senderId &&
+        typeof message.senderId === "object" &&
+        message.senderId._id !== userId
+      ) {
         setMessages((prev) => {
           // Check if this message is already in our list to avoid duplicates
           const isDuplicate = prev.some(
             (m) =>
               m._id === message._id ||
               (m.text === message.text &&
-                m.senderId &&
+                typeof m.senderId === "object" &&
+                typeof message.senderId === "object" &&
                 m.senderId._id === message.senderId._id)
           );
 
@@ -201,13 +245,22 @@ const Chat = () => {
         });
 
         // Since we're actively in this chat, mark messages from this user as read
-        dispatch(markAsRead(targetUserId));
-      } else if (message.senderId && message.senderId._id === userId) {
+        if (targetUserId) {
+          dispatch(markAsRead(targetUserId));
+        }
+      } else if (
+        message.senderId &&
+        typeof message.senderId === "object" &&
+        message.senderId._id === userId
+      ) {
         // For messages sent by us, find our optimistic update and replace it with the server version
         // This ensures we have the correct server ID and timestamp
         setMessages((prev) => {
           const existingIndex = prev.findIndex(
-            (m) => m.text === message.text && m.senderId._id === userId
+            (m) =>
+              m.text === message.text &&
+              typeof m.senderId === "object" &&
+              m.senderId._id === userId
           );
 
           if (existingIndex !== -1) {
@@ -223,7 +276,7 @@ const Chat = () => {
     });
 
     // Listen for chat history
-    socketRef.current.on("chatHistory", (history) => {
+    socketRef.current.on("chatHistory", (history: Message[]) => {
       console.log("Received chat history:", history);
       if (Array.isArray(history) && history.length > 0) {
         setMessages(history);
@@ -234,11 +287,13 @@ const Chat = () => {
     const handleReconnect = () => {
       console.log("Socket reconnected in Chat component, rejoining chat");
       // Rejoin the chat room on reconnection
-      socketRef.current.emit("joinChat", {
-        firstName: user?.firstName,
-        userId,
-        targetUserId,
-      });
+      if (socketRef.current) {
+        socketRef.current.emit("joinChat", {
+          firstName: user?.firstName,
+          userId,
+          targetUserId,
+        });
+      }
     };
 
     socketRef.current.on("connect", handleReconnect);
@@ -303,8 +358,9 @@ const Chat = () => {
                   alt="Profile avatar"
                   className="w-full h-full object-cover bg-gray-700"
                   onError={(e) => {
-                    if (e.target.src !== DEFAULT_AVATAR) {
-                      e.target.src = DEFAULT_AVATAR;
+                    const target = e.target as HTMLImageElement;
+                    if (target.src !== DEFAULT_AVATAR) {
+                      target.src = DEFAULT_AVATAR;
                     }
                   }}
                 />
@@ -383,9 +439,6 @@ const Chat = () => {
                     // Get sender info (for avatar and possibly name)
                     const senderInfo =
                       typeof msg.senderId === "object" ? msg.senderId : null;
-                    const senderName = senderInfo
-                      ? `${senderInfo.firstName} ${senderInfo.lastName || ""}`
-                      : "";
                     const senderPhoto = senderInfo?.photoUrl;
 
                     return (
@@ -406,8 +459,9 @@ const Chat = () => {
                               alt="Avatar"
                               className="w-full h-full object-cover bg-gray-700"
                               onError={(e) => {
-                                if (e.target.src !== DEFAULT_AVATAR) {
-                                  e.target.src = DEFAULT_AVATAR;
+                                const target = e.target as HTMLImageElement;
+                                if (target.src !== DEFAULT_AVATAR) {
+                                  target.src = DEFAULT_AVATAR;
                                 }
                               }}
                             />
@@ -439,8 +493,9 @@ const Chat = () => {
                               alt="Avatar"
                               className="w-full h-full object-cover bg-gray-700"
                               onError={(e) => {
-                                if (e.target.src !== DEFAULT_AVATAR) {
-                                  e.target.src = DEFAULT_AVATAR;
+                                const target = e.target as HTMLImageElement;
+                                if (target.src !== DEFAULT_AVATAR) {
+                                  target.src = DEFAULT_AVATAR;
                                 }
                               }}
                             />

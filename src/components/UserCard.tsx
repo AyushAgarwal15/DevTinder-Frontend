@@ -1,8 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
+import { User } from "../utils/types";
 
-const UserCard = ({ user, onHandleSendRequest }) => {
+interface UserCardProps {
+  user: User;
+  onHandleSendRequest: ((id: string, status: string) => void) | null;
+}
+
+const UserCard: React.FC<UserCardProps> = ({ user, onHandleSendRequest }) => {
   const {
+    _id,
     firstName,
     lastName,
     photoUrl,
@@ -10,11 +17,13 @@ const UserCard = ({ user, onHandleSendRequest }) => {
     gender,
     about,
     skills,
-    _id,
     linkedinUrl,
     githubUrl,
     portfolioUrl,
   } = user;
+
+  // Full name
+  const name = firstName ? `${firstName} ${lastName || ""}` : "";
 
   // Track the card's position as it's dragged
   const x = useMotionValue(0);
@@ -27,7 +36,9 @@ const UserCard = ({ user, onHandleSendRequest }) => {
   const rightOpacity = useTransform(x, [0, 100], [0, 1]);
 
   // Function to handle drag end (swiping)
-  const handleDragEnd = (_, info) => {
+  const handleDragEnd = (_: any, info: { offset: { x: number } }) => {
+    if (!onHandleSendRequest) return;
+
     // Swipe threshold
     const threshold = 100;
 
@@ -74,14 +85,12 @@ const UserCard = ({ user, onHandleSendRequest }) => {
         <figure className="relative h-64 overflow-hidden pointer-events-none">
           <img
             src={photoUrl}
-            alt={`${firstName} ${lastName}`}
+            alt={name || "User profile"}
             className="w-full h-full object-contain"
             draggable="false"
           />
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-            <h2 className="text-2xl font-bold text-white">
-              {firstName} {lastName}
-            </h2>
+            <h2 className="text-2xl font-bold text-white">{name}</h2>
             <p className="text-white/90 text-sm">
               {age}, {gender}
             </p>
@@ -176,52 +185,54 @@ const UserCard = ({ user, onHandleSendRequest }) => {
             </div>
           )}
 
-          <div className="card-actions justify-end mt-2 pointer-events-auto">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onHandleSendRequest(_id, "ignored");
-              }}
-              className="w-12 h-12 rounded-full bg-red-500 hover:bg-red-600 transition-colors flex items-center justify-center text-white border-none cursor-pointer"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+          {onHandleSendRequest && (
+            <div className="card-actions justify-end mt-2 pointer-events-auto">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onHandleSendRequest(_id, "ignored");
+                }}
+                className="w-12 h-12 rounded-full bg-red-500 hover:bg-red-600 transition-colors flex items-center justify-center text-white border-none cursor-pointer"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onHandleSendRequest(_id, "interested");
-              }}
-              className="w-12 h-12 rounded-full bg-[#7C3AED] hover:bg-[#6D28D9] transition-colors flex items-center justify-center text-white border-none cursor-pointer"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onHandleSendRequest(_id, "interested");
+                }}
+                className="w-12 h-12 rounded-full bg-[#7C3AED] hover:bg-[#6D28D9] transition-colors flex items-center justify-center text-white border-none cursor-pointer"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-            </button>
-          </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
       </motion.div>
     </div>

@@ -7,13 +7,32 @@ import { addRequests, removeRequests } from "../utils/requestSlice";
 import { removeConnections } from "../utils/connectionSlice";
 import RequestCard from "./RequestCard";
 import Loader from "./Loader";
+import { RootState } from "../utils/types";
+
+interface UserData {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  photoUrl?: string;
+  skills?: string[];
+}
+
+interface Request {
+  _id: string;
+  fromUserId: UserData;
+  toUserId: string;
+  status: string;
+  createdAt: string;
+}
 
 const Requests = () => {
-  const requests = useSelector((store) => store.requests);
+  const requests = useSelector((store: RootState) => store.requests) as
+    | Request[]
+    | null;
   const dispatch = useDispatch();
   const toast = useToast();
-  const [processingId, setProcessingId] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [processingId, setProcessingId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchRequests = async () => {
     if (requests) {
@@ -22,12 +41,12 @@ const Requests = () => {
     }
     try {
       setIsLoading(true);
-      const res = await axios.get(BASE_URL + "/user/requests/received", {
+      const res = await axios.get(`${BASE_URL}/user/requests/received`, {
         withCredentials: true,
       });
       dispatch(addRequests(res?.data?.data));
       setIsLoading(false);
-    } catch (err) {
+    } catch (err: any) {
       const errorMessage = err?.response?.data || "Something went wrong";
       toast.error(errorMessage);
       console.error(err);
@@ -35,11 +54,14 @@ const Requests = () => {
     }
   };
 
-  const handleReceivedRequest = async (id, status) => {
+  const handleReceivedRequest = async (
+    id: string,
+    status: "accepted" | "rejected"
+  ) => {
     setProcessingId(id);
     try {
-      const response = await axios.post(
-        BASE_URL + `/request/review/${status}/${id}`,
+      await axios.post(
+        `${BASE_URL}/request/review/${status}/${id}`,
         {},
         { withCredentials: true }
       );
@@ -54,7 +76,7 @@ const Requests = () => {
       if (status === "rejected") {
         toast.success("Connection request rejected!");
       }
-    } catch (err) {
+    } catch (err: any) {
       const errorMessage = err?.response?.data || "Failed to accept request";
       toast.error(errorMessage);
       console.error(err);

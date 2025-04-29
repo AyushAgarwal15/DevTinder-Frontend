@@ -1,8 +1,28 @@
 import React, { useState } from "react";
 import Loader from "./Loader";
 
-const RequestCard = ({ request, requestId, onHandleRequest, isProcessing }) => {
-  const [imageError, setImageError] = useState(false);
+interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  photoUrl?: string;
+  skills?: string[];
+}
+
+interface RequestCardProps {
+  request: User;
+  requestId: string;
+  onHandleRequest: (id: string, status: "accepted" | "rejected") => void;
+  isProcessing: boolean;
+}
+
+const RequestCard: React.FC<RequestCardProps> = ({
+  request,
+  requestId,
+  onHandleRequest,
+  isProcessing,
+}) => {
+  const [imageError, setImageError] = useState<boolean>(false);
 
   return (
     <div className="flex items-center justify-between bg-[#252b3d] p-4 rounded-lg mb-4 border border-gray-800">

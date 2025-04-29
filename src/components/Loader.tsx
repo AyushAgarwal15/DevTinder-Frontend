@@ -1,12 +1,16 @@
 import React from "react";
 
+interface LoaderProps {
+  /** Size of the loader (small, medium, large) */
+  size?: "small" | "medium" | "large";
+  /** Optional text to display below the loader */
+  text?: string;
+}
+
 /**
  * A simple circular loader component
- * @param {Object} props
- * @param {string} props.size - Size of the loader (small, medium, large)
- * @param {string} props.text - Optional text to display below the loader
  */
-const Loader = ({ size = "medium", text = "" }) => {
+const Loader: React.FC<LoaderProps> = ({ size = "medium", text = "" }) => {
   // Determine size based on prop
   const sizeClasses = {
     small: "w-6 h-6 border-2",

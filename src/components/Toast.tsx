@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
+import { ToastType } from "../context/ToastContext";
+
+interface ToastProps {
+  /** Message to display */
+  message: string;
+  /** Type of toast (success, error, warning, info) */
+  type?: ToastType;
+  /** Duration in ms before auto-dismissing */
+  duration?: number;
+  /** Function to call when toast is closed */
+  onClose?: () => void;
+}
 
 /**
  * Toast component for displaying notifications
- * @param {Object} props
- * @param {string} props.message - Message to display
- * @param {string} props.type - Type of toast (success, error, warning, info)
- * @param {number} props.duration - Duration in ms before auto-dismissing
- * @param {function} props.onClose - Function to call when toast is closed
  */
-const Toast = ({ message, type = "success", duration = 3000, onClose }) => {
+const Toast: React.FC<ToastProps> = ({
+  message,
+  type = "success",
+  duration = 3000,
+  onClose,
+}) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isLeaving, setIsLeaving] = useState(false);
 

@@ -2,17 +2,28 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { markAllAsRead, markAsRead } from "../utils/messageNotificationsSlice";
+import { RootState } from "../utils/types";
 
 // Default avatar for fallback
 const DEFAULT_AVATAR =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666666'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
 
-const timeAgo = (timestamp) => {
+interface MessageNotification {
+  userId: string;
+  firstName?: string;
+  lastName?: string;
+  photoUrl?: string;
+  lastMessage: string;
+  timestamp: string;
+  isRead: boolean;
+}
+
+const timeAgo = (timestamp: string): string => {
   if (!timestamp) return "";
 
   const now = new Date();
   const date = new Date(timestamp);
-  const seconds = Math.floor((now - date) / 1000);
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
   if (seconds < 60) return "just now";
   if (seconds < 3600) return Math.floor(seconds / 60) + "m ago";
@@ -22,11 +33,11 @@ const timeAgo = (timestamp) => {
   return date.toLocaleDateString();
 };
 
-const Messages = () => {
+const Messages: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { notifications, unreadCount } = useSelector(
-    (state) => state.messageNotifications
+    (state: RootState) => state.messageNotifications
   );
 
   useEffect(() => {
@@ -34,7 +45,7 @@ const Messages = () => {
     console.log("Unread count:", unreadCount);
   }, [notifications, unreadCount]);
 
-  const handleNavigateToChat = (e, userId) => {
+  const handleNavigateToChat = (e: React.MouseEvent, userId: string): void => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -44,7 +55,7 @@ const Messages = () => {
     dispatch(markAsRead(userId));
 
     // Close any open dropdowns first by blurring the active element
-    if (document.activeElement) {
+    if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
 
@@ -96,7 +107,7 @@ const Messages = () => {
         </div>
       ) : (
         <div className="mt-1">
-          {notifications.map((notification) => (
+          {notifications.map((notification: MessageNotification) => (
             <div
               key={notification.userId}
               onClick={(e) => handleNavigateToChat(e, notification.userId)}
@@ -113,8 +124,9 @@ const Messages = () => {
                     alt={`${notification.firstName}'s profile`}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      if (e.target.src !== DEFAULT_AVATAR) {
-                        e.target.src = DEFAULT_AVATAR;
+                      const target = e.target as HTMLImageElement;
+                      if (target.src !== DEFAULT_AVATAR) {
+                        target.src = DEFAULT_AVATAR;
                       }
                     }}
                   />

@@ -6,12 +6,47 @@ import { BASE_URL } from "../utils/constants";
 import { useToast } from "../context/ToastContext";
 import ButtonLoader from "./ButtonLoader";
 import Loader from "./Loader";
+import { AppDispatch } from "../utils/types";
 
-const EditProfile = ({ user }) => {
-  const dispatch = useDispatch();
+// User interface that matches the app's structure
+interface User {
+  _id: string;
+  firstName: string;
+  lastName?: string;
+  photoUrl?: string;
+  gender?: string;
+  age?: number;
+  about?: string;
+  skills?: string[];
+  linkedinUrl?: string;
+  githubUrl?: string;
+  portfolioUrl?: string;
+  emailId: string;
+}
+
+// Form data interface
+interface FormData {
+  firstName: string;
+  lastName: string;
+  photoUrl: string;
+  gender: string;
+  age: string;
+  about: string;
+  skills: string[];
+  linkedinUrl: string;
+  githubUrl: string;
+  portfolioUrl: string;
+}
+
+interface EditProfileProps {
+  user: User | null;
+}
+
+const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const toast = useToast();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
     photoUrl: "",
@@ -55,7 +90,11 @@ const EditProfile = ({ user }) => {
     }
   }, [formData.photoUrl]);
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -73,26 +112,26 @@ const EditProfile = ({ user }) => {
     }
   };
 
-  const handleSkillRemove = (skillToRemove) => {
+  const handleSkillRemove = (skillToRemove: string) => {
     setFormData((prev) => ({
       ...prev,
       skills: prev.skills.filter((skill) => skill !== skillToRemove),
     }));
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     // Prevent form submission on Enter key except in textarea
-    if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+    if (e.key === "Enter" && (e.target as HTMLElement).tagName !== "TEXTAREA") {
       e.preventDefault();
 
       // If Enter is pressed in skill input, add the skill
-      if (e.target.name === "skillInput") {
+      if ((e.target as HTMLInputElement).name === "skillInput") {
         handleSkillAdd();
       }
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
       setIsLoading(true);
@@ -105,7 +144,7 @@ const EditProfile = ({ user }) => {
       );
       dispatch(addUser(response?.data?.data));
       toast.success("Profile updated successfully!");
-    } catch (err) {
+    } catch (err: any) {
       setError(err?.response?.data || "Something went wrong 💀");
       toast.error(
         err?.response?.data || "Something went wrong updating your profile"

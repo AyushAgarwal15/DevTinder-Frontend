@@ -21,13 +21,14 @@ import SocketProvider from "./context/SocketContext";
 import axios from "axios";
 import { BASE_URL } from "./utils/constants";
 import { addUser } from "./utils/userSlice";
+import { AppDispatch, RootState } from "./utils/types";
 
 // AuthListener component to handle navigation protection
 const AuthListener = () => {
-  const user = useSelector((store) => store.user);
+  const user = useSelector((store: RootState) => store.user);
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     const checkAuthOnNavigation = async () => {

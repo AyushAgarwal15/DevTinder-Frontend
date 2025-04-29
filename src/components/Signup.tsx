@@ -7,22 +7,38 @@ import { BASE_URL } from "../utils/constants";
 import { useToast } from "../context/ToastContext";
 import Logo from "./Logo";
 import authThumbnail from "../assets/images/auth_thumbnail.jpeg";
+import { RootState } from "../utils/types";
 
-const Signup = () => {
-  const [formData, setFormData] = useState({
+interface FormData {
+  firstName: string;
+  lastName: string;
+  emailId: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+const Signup: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
     emailId: "",
     password: "",
     confirmPassword: "",
   });
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
-  const user = useSelector((store) => store.user);
+  const user = useSelector((store: RootState) => store.user) as User | null;
 
   // Check if user is already authenticated
   useEffect(() => {
@@ -61,7 +77,7 @@ const Signup = () => {
         }
 
         // Then verify with the server
-        const res = await axios.get(BASE_URL + "/profile/view", {
+        const res = await axios.get(`${BASE_URL}/profile/view`, {
           withCredentials: true,
           signal: controller.signal,
         });
@@ -77,7 +93,7 @@ const Signup = () => {
         clearTimeout(timeoutId);
 
         // If aborted or 401 or any other error, user is not authenticated
-        if (error.name === "AbortError") {
+        if (error instanceof DOMException && error.name === "AbortError") {
           console.log("Auth check aborted due to timeout");
         } else {
           console.log("User not authenticated, showing signup page");
@@ -94,7 +110,7 @@ const Signup = () => {
     checkAuthStatus();
   }, [dispatch, navigate, user]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -102,7 +118,7 @@ const Signup = () => {
     }));
   };
 
-  const handleSignup = async (e) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Basic validation
@@ -117,7 +133,7 @@ const Signup = () => {
       setError("");
 
       const res = await axios.post(
-        BASE_URL + "/signup",
+        `${BASE_URL}/signup`,
         {
           firstName: formData.firstName,
           lastName: formData.lastName,
@@ -130,8 +146,19 @@ const Signup = () => {
       dispatch(addUser(res?.data));
       toast.success("Signup successful! Welcome to DevTinder!");
       navigate("/profile");
-    } catch (err) {
-      const errorMessage = err?.response?.data || "Something went wrong";
+    } catch (err: any) {
+      console.log(err);
+      let errorMessage = err?.response?.data || "Something went wrong";
+
+      // Check for MongoDB duplicate key error
+      if (
+        errorMessage.includes("E11000 duplicate key error") &&
+        errorMessage.includes("emailId")
+      ) {
+        errorMessage =
+          "This email is already registered. Please use a different email or login to your existing account.";
+      }
+
       setError(errorMessage);
       toast.error(errorMessage);
       console.error(err);
