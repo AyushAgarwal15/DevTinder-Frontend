@@ -59,10 +59,16 @@ const Profile: React.FC = () => {
         </div>
 
         {isEditing ? (
-          <EditProfile user={user} />
+          user && <EditProfile user={user as any} />
         ) : (
           <div className="flex justify-center">
-            <UserCard user={user} onHandleSendRequest={handleProfileViewOnly} />
+            {user && (
+              <UserCard
+                user={user as any}
+                onHandleSendRequest={handleProfileViewOnly}
+                enableDrag={false}
+              />
+            )}
           </div>
         )}
       </div>
