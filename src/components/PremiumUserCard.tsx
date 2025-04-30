@@ -207,26 +207,26 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
                 skills.slice(0, 5).map((skill, index) => (
                   <span
                     key={index}
-                    className="px-2 py-1 bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-md shadow-amber-900/20 rounded-full text-xs"
+                    className="px-2 py-1 bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-md shadow-amber-900/20 rounded-full text-xs cursor-pointer"
                   >
                     {skill}
                   </span>
                 ))
               ) : (
                 <>
-                  <span className="px-2 py-1 bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-md shadow-amber-900/20 rounded-full text-xs">
+                  <span className="px-2 py-1 bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-md shadow-amber-900/20 rounded-full text-xs cursor-pointer">
                     React
                   </span>
-                  <span className="px-2 py-1 bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-md shadow-amber-900/20 rounded-full text-xs">
+                  <span className="px-2 py-1 bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-md shadow-amber-900/20 rounded-full text-xs cursor-pointer">
                     TypeScript
                   </span>
-                  <span className="px-2 py-1 bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-md shadow-amber-900/20 rounded-full text-xs">
+                  <span className="px-2 py-1 bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-md shadow-amber-900/20 rounded-full text-xs cursor-pointer">
                     Node.js
                   </span>
                 </>
               )}
               {skills && skills.length > 5 && (
-                <span className="px-2 py-1 bg-gradient-to-r from-slate-600 to-slate-500 text-white shadow-md rounded-full text-xs">
+                <span className="px-2 py-1 bg-gradient-to-r from-slate-600 to-slate-500 text-white shadow-md rounded-full text-xs cursor-pointer">
                   +{skills.length - 5} more
                 </span>
               )}
@@ -240,7 +240,7 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
                 href={linkedinUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-amber-400 hover:text-blue-400 pointer-events-auto transition-colors"
+                className="text-amber-400 hover:text-blue-400 pointer-events-auto transition-colors cursor-pointer"
                 onClick={(e) => e.stopPropagation()}
               >
                 <FaLinkedin
@@ -253,7 +253,7 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
                 href={githubUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-amber-400 hover:text-gray-100 pointer-events-auto transition-colors"
+                className="text-amber-400 hover:text-gray-100 pointer-events-auto transition-colors cursor-pointer"
                 onClick={(e) => e.stopPropagation()}
               >
                 <FaGithub
@@ -266,7 +266,7 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
                 href={portfolioUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-amber-400 hover:text-green-400 pointer-events-auto transition-colors"
+                className="text-amber-400 hover:text-green-400 pointer-events-auto transition-colors cursor-pointer"
                 onClick={(e) => e.stopPropagation()}
               >
                 <FaGlobe
@@ -285,7 +285,7 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
                   e.stopPropagation();
                   onHandleSendRequest(_id, "ignored");
                 }}
-                className="flex-1 py-2 bg-red-500/10 text-red-500 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/20 transition-colors"
+                className="flex-1 py-2 bg-red-500/10 text-red-500 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/20 transition-colors cursor-pointer"
               >
                 <FaTimes />
                 <span>Ignore</span>
@@ -295,7 +295,7 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
                   e.stopPropagation();
                   onHandleSendRequest(_id, "interested");
                 }}
-                className="flex-1 py-2 bg-amber-500/10 text-amber-400 rounded-lg flex items-center justify-center gap-2 hover:bg-amber-500/20 transition-colors"
+                className="flex-1 py-2 bg-amber-500/10 text-amber-400 rounded-lg flex items-center justify-center gap-2 hover:bg-amber-500/20 transition-colors cursor-pointer"
               >
                 <FaHeart />
                 <span>Like</span>

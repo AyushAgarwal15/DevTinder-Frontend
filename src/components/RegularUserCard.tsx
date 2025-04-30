@@ -180,13 +180,13 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
                 {skills.slice(0, 5).map((skill, index) => (
                   <span
                     key={index}
-                    className="px-2 py-1 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full text-xs shadow-md"
+                    className="px-2 py-1 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full text-xs shadow-md cursor-pointer"
                   >
                     {skill}
                   </span>
                 ))}
                 {skills.length > 5 && (
-                  <span className="px-2 py-1 bg-gray-600 text-white shadow-md rounded-full text-xs">
+                  <span className="px-2 py-1 bg-gray-600 text-white shadow-md rounded-full text-xs cursor-pointer">
                     +{skills.length - 5} more
                   </span>
                 )}
@@ -203,7 +203,7 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
                     href={linkedinUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-400 pointer-events-auto transition-colors"
+                    className="text-blue-500 hover:text-blue-400 pointer-events-auto transition-colors cursor-pointer"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <FaLinkedin size={18} />
@@ -215,7 +215,7 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
                     href={githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-300 hover:text-white pointer-events-auto transition-colors"
+                    className="text-gray-300 hover:text-white pointer-events-auto transition-colors cursor-pointer"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <FaGithub size={18} />
@@ -227,7 +227,7 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
                     href={portfolioUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-green-500 hover:text-green-400 pointer-events-auto transition-colors"
+                    className="text-green-500 hover:text-green-400 pointer-events-auto transition-colors cursor-pointer"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <FaGlobe size={18} />
@@ -242,14 +242,14 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
             <div className="flex justify-between mt-4 gap-4 pointer-events-auto">
               <button
                 onClick={() => onHandleSendRequest(_id, "ignored")}
-                className="flex-1 py-2 bg-red-500/10 text-red-500 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/20 transition-colors"
+                className="flex-1 py-2 bg-red-500/10 text-red-500 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/20 transition-colors cursor-pointer"
               >
                 <FaTimes />
                 <span>Ignore</span>
               </button>
               <button
                 onClick={() => onHandleSendRequest(_id, "interested")}
-                className="flex-1 py-2 bg-green-500/10 text-green-500 rounded-lg flex items-center justify-center gap-2 hover:bg-green-500/20 transition-colors"
+                className="flex-1 py-2 bg-green-500/10 text-green-500 rounded-lg flex items-center justify-center gap-2 hover:bg-green-500/20 transition-colors cursor-pointer"
               >
                 <FaHeart />
                 <span>Like</span>

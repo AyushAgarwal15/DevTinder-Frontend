@@ -37,7 +37,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
 
   return (
     <>
-      <div className="flex items-center justify-between bg-[#252b3d] p-4 rounded-lg mb-4 border border-gray-800 hover:bg-[#2d354a] transition-colors relative">
+      <div className="flex items-center justify-between bg-[#252b3d] p-4 rounded-lg mb-4 border border-gray-800 hover:bg-[#2d354a] transition-colors relative cursor-pointer">
         <div className="flex items-center">
           <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#7C3AED] bg-gray-800">
             <img

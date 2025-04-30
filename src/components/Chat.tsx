@@ -330,7 +330,7 @@ const Chat: React.FC = () => {
         <div className="p-4 bg-[#252b3d] border-b border-gray-800 flex items-center">
           <Link
             to="/connections"
-            className="text-gray-400 hover:text-[#7C3AED] transition-colors mr-3"
+            className="text-gray-400 hover:text-[#7C3AED] transition-colors mr-3 cursor-pointer"
           >
             <FaArrowLeft className="h-6 w-6" />
           </Link>

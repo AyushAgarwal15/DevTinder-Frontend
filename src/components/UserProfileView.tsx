@@ -169,7 +169,7 @@ const UserProfileView: React.FC = () => {
         </div>
         <button
           onClick={() => navigate(-1)}
-          className="px-4 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors"
+          className="px-4 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors cursor-pointer"
         >
           Go Back
         </button>
@@ -182,7 +182,7 @@ const UserProfileView: React.FC = () => {
       <div className="max-w-4xl mx-auto">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition-colors"
+          className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition-colors cursor-pointer"
         >
           <FaArrowLeft /> Back
         </button>
@@ -227,7 +227,7 @@ const UserProfileView: React.FC = () => {
                   {isConnection && (
                     <button
                       onClick={() => navigate(`/chat/${user._id}`)}
-                      className="flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors cursor-pointer"
                     >
                       <BsChatDots /> Message
                     </button>
@@ -251,7 +251,7 @@ const UserProfileView: React.FC = () => {
                 {user.skills.map((skill, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-[#7C3AED]/10 text-[#7C3AED] rounded-full text-sm"
+                    className="px-3 py-1 bg-[#7C3AED]/10 text-[#7C3AED] rounded-full text-sm cursor-pointer"
                   >
                     {skill}
                   </span>
@@ -269,7 +269,7 @@ const UserProfileView: React.FC = () => {
                   href={user.linkedinUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600/10 text-blue-500 rounded-lg hover:bg-blue-600/20 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600/10 text-blue-500 rounded-lg hover:bg-blue-600/20 transition-colors cursor-pointer"
                 >
                   <FaLinkedin /> LinkedIn
                 </a>
@@ -280,7 +280,7 @@ const UserProfileView: React.FC = () => {
                   href={user.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-700/30 text-gray-300 rounded-lg hover:bg-gray-700/50 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-700/30 text-gray-300 rounded-lg hover:bg-gray-700/50 transition-colors cursor-pointer"
                 >
                   <FaGithub /> GitHub
                 </a>
@@ -291,7 +291,7 @@ const UserProfileView: React.FC = () => {
                   href={user.portfolioUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600/10 text-green-500 rounded-lg hover:bg-green-600/20 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600/10 text-green-500 rounded-lg hover:bg-green-600/20 transition-colors cursor-pointer"
                 >
                   <FaGlobe /> Portfolio
                 </a>
@@ -356,7 +356,7 @@ const UserProfileView: React.FC = () => {
                     {githubData.githubLanguages.map((language) => (
                       <span
                         key={language}
-                        className="px-3 py-1 rounded-full text-sm"
+                        className="px-3 py-1 rounded-full text-sm cursor-pointer"
                         style={{
                           backgroundColor: `${getLanguageColor(language)}30`,
                           color: getLanguageColor(language),
@@ -379,7 +379,7 @@ const UserProfileView: React.FC = () => {
                         href={repo.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[#7C3AED] font-medium hover:underline"
+                        className="text-[#7C3AED] font-medium hover:underline cursor-pointer"
                       >
                         {repo.name}
                       </a>
@@ -403,7 +403,7 @@ const UserProfileView: React.FC = () => {
                             backgroundColor: getLanguageColor(repo.language),
                           }}
                         ></span>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-gray-400 cursor-pointer">
                           {repo.language}
                         </span>
                       </div>

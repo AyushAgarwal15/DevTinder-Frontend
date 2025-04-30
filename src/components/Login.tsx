@@ -8,7 +8,7 @@ import { useToast } from "../context/ToastContext";
 import ButtonLoader from "./ButtonLoader";
 import { addRequests } from "../utils/requestSlice";
 import Logo from "./Logo";
-import authThumbnail from "../assets/images/auth_thumbnail.jpeg";
+import AuthThumbnail from "./AuthThumbnail";
 import { RootState } from "../utils/types";
 import { FaExclamationCircle, FaGithub } from "react-icons/fa";
 
@@ -158,7 +158,7 @@ const Login: React.FC = () => {
       <div className="flex w-full h-screen overflow-hidden">
         {/* Left side: Form container */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 overflow-y-auto scrollbar-hide">
-          <div className="w-full max-w-xl bg-[#1c2030] shadow-2xl border border-gray-800 rounded-lg overflow-hidden">
+          <div className="w-full max-w-xl bg-[#1c2030] shadow-2xl border border-gray-800 rounded-lg overflow-hidden mt-16">
             <div className="p-8">
               <div className="flex justify-center mb-8">
                 <div className="scale-150 transform">
@@ -172,23 +172,6 @@ const Login: React.FC = () => {
                 <p className="text-gray-400 mt-2">
                   Sign in to continue to DevTinder
                 </p>
-              </div>
-
-              {/* GitHub Login Button */}
-              <div className="mb-4">
-                <button
-                  onClick={handleGitHubLogin}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
-                >
-                  <FaGithub className="text-xl" />
-                  Sign in with GitHub
-                </button>
-              </div>
-
-              <div className="flex items-center my-4">
-                <div className="flex-1 h-px bg-gray-700"></div>
-                <div className="px-4 text-sm text-gray-500">OR</div>
-                <div className="flex-1 h-px bg-gray-700"></div>
               </div>
 
               <div className="w-full mb-4">
@@ -237,6 +220,26 @@ const Login: React.FC = () => {
                 {isLoading ? <ButtonLoader text="Signing in..." /> : "Sign In"}
               </button>
 
+              <div className="flex items-center my-4">
+                <div className="flex-1 h-px bg-gray-700"></div>
+                <div className="px-4 text-sm text-gray-500">OR</div>
+                <div className="flex-1 h-px bg-gray-700"></div>
+              </div>
+
+              {/* GitHub Login Button */}
+              <div className="mb-4">
+                <button
+                  onClick={handleGitHubLogin}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors relative"
+                >
+                  <FaGithub className="text-xl" />
+                  Sign in with GitHub
+                  <span className="absolute -top-2 -right-2 bg-[#7C3AED] text-white text-xs px-2 py-1 rounded-full">
+                    Recommended
+                  </span>
+                </button>
+              </div>
+
               <p className="text-center text-gray-400 mt-6">
                 Don't have an account?{" "}
                 <Link
@@ -251,13 +254,7 @@ const Login: React.FC = () => {
         </div>
 
         {/* Right side: Image */}
-        <div className="hidden lg:block lg:w-1/2 bg-cover bg-center">
-          <img
-            src={authThumbnail}
-            alt="Developers connecting"
-            className="w-full h-full object-cover"
-          />
-        </div>
+        <AuthThumbnail />
       </div>
     </div>
   );

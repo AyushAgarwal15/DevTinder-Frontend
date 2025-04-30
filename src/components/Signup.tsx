@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { useToast } from "../context/ToastContext";
 import Logo from "./Logo";
-import authThumbnail from "../assets/images/auth_thumbnail.jpeg";
+import AuthThumbnail from "./AuthThumbnail";
 import { RootState } from "../utils/types";
 import { FaExclamationCircle, FaGithub } from "react-icons/fa";
 
@@ -186,7 +186,7 @@ const Signup: React.FC = () => {
       <div className="flex w-full h-screen overflow-hidden">
         {/* Left side: Form container */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 overflow-y-auto scrollbar-hide">
-          <div className="w-full max-w-xl bg-[#1c2030] shadow-2xl border border-gray-800 rounded-lg overflow-hidden mt-40">
+          <div className="w-full max-w-xl bg-[#1c2030] shadow-2xl border border-gray-800 rounded-lg overflow-hidden mt-64">
             <div className="p-8">
               <div className="flex justify-center mb-8">
                 <div className="scale-150 transform">
@@ -200,23 +200,6 @@ const Signup: React.FC = () => {
                 <p className="text-gray-400 mt-2">
                   Connect with developers around the world
                 </p>
-              </div>
-
-              {/* GitHub Signup Button */}
-              <div className="mb-4">
-                <button
-                  onClick={handleGitHubSignup}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
-                >
-                  <FaGithub className="text-xl" />
-                  Sign up with GitHub
-                </button>
-              </div>
-
-              <div className="flex items-center my-4">
-                <div className="flex-1 h-px bg-gray-700"></div>
-                <div className="px-4 text-sm text-gray-500">OR</div>
-                <div className="flex-1 h-px bg-gray-700"></div>
               </div>
 
               <form onSubmit={handleSignup} className="space-y-4">
@@ -316,6 +299,26 @@ const Signup: React.FC = () => {
                 </button>
               </form>
 
+              <div className="flex items-center my-4">
+                <div className="flex-1 h-px bg-gray-700"></div>
+                <div className="px-4 text-sm text-gray-500">OR</div>
+                <div className="flex-1 h-px bg-gray-700"></div>
+              </div>
+
+              {/* GitHub Signup Button */}
+              <div className="mb-4">
+                <button
+                  onClick={handleGitHubSignup}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors relative"
+                >
+                  <FaGithub className="text-xl" />
+                  Sign up with GitHub
+                  <span className="absolute -top-2 -right-2 bg-[#7C3AED] text-white text-xs px-2 py-1 rounded-full">
+                    Recommended
+                  </span>
+                </button>
+              </div>
+
               <p className="text-center mt-6 text-gray-400">
                 Already have an account?{" "}
                 <a
@@ -330,23 +333,7 @@ const Signup: React.FC = () => {
         </div>
 
         {/* Right side: Image container (hidden on mobile) */}
-        <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
-          <img
-            src={authThumbnail}
-            alt="Developer coding"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1c2030]/40 to-[#7C3AED]/30">
-            <div className="absolute bottom-10 left-10 max-w-md">
-              <h2 className="text-4xl font-bold mb-3 text-white drop-shadow-lg">
-                Connect with developers worldwide
-              </h2>
-              <p className="text-white text-xl drop-shadow-md">
-                Find your perfect coding partner on DevTinder
-              </p>
-            </div>
-          </div>
-        </div>
+        <AuthThumbnail />
       </div>
     </div>
   );

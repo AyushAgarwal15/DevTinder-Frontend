@@ -89,7 +89,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ connection }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   title="LinkedIn Profile"
-                  className="bg-[#252b3d]/80 p-2 rounded-full hover:bg-[#252b3d] transition-colors"
+                  className="bg-[#252b3d]/80 p-2 rounded-full hover:bg-[#252b3d] transition-colors cursor-pointer"
                 >
                   <FaLinkedin size={18} className="text-blue-500" />
                 </a>
@@ -101,7 +101,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ connection }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   title="GitHub Profile"
-                  className="bg-[#252b3d]/80 p-2 rounded-full hover:bg-[#252b3d] transition-colors"
+                  className="bg-[#252b3d]/80 p-2 rounded-full hover:bg-[#252b3d] transition-colors cursor-pointer"
                 >
                   <FaGithub size={18} className="text-gray-200" />
                 </a>
@@ -113,7 +113,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ connection }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   title="Portfolio Website"
-                  className="bg-[#252b3d]/80 p-2 rounded-full hover:bg-[#252b3d] transition-colors"
+                  className="bg-[#252b3d]/80 p-2 rounded-full hover:bg-[#252b3d] transition-colors cursor-pointer"
                 >
                   <FaGlobe size={18} className="text-green-500" />
                 </a>
@@ -176,13 +176,13 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ connection }) => {
               {skills.slice(0, 3).map((skill, index) => (
                 <span
                   key={index}
-                  className="px-2 py-1 bg-[#7C3AED]/10 text-[#7C3AED] text-xs rounded-full"
+                  className="px-2 py-1 bg-[#7C3AED]/10 text-[#7C3AED] text-xs rounded-full cursor-pointer"
                 >
                   {skill}
                 </span>
               ))}
               {skills.length > 3 && (
-                <span className="px-2 py-1 bg-gray-700/30 text-gray-400 text-xs rounded-full">
+                <span className="px-2 py-1 bg-gray-700/30 text-gray-400 text-xs rounded-full cursor-pointer">
                   +{skills.length - 3} more
                 </span>
               )}

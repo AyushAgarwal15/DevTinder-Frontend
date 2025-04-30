@@ -140,7 +140,7 @@ const Connections: React.FC = () => {
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm("")}
-                className="px-6 py-2 bg-[#252b3d] border border-gray-700 text-gray-300 rounded-lg hover:bg-[#1c2030] transition-colors"
+                className="px-6 py-2 bg-[#252b3d] border border-gray-700 text-gray-300 rounded-lg hover:bg-[#1c2030] transition-colors cursor-pointer"
               >
                 Clear Search
               </button>
