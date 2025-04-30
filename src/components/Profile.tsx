@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import EditProfile from "./EditProfile";
 import UserCard from "./UserCard";
+import GitHubProfile from "./GitHubProfile";
 import { RootState, User } from "../utils/types";
 import { FaEye, FaEdit } from "react-icons/fa";
 
 const Profile: React.FC = () => {
   const user = useSelector((store: RootState) => store.user);
   const [isEditing, setIsEditing] = useState(true);
+  const [activeTab, setActiveTab] = useState<"profile" | "github">("profile");
 
   // Dummy handler for UserCard to satisfy its props requirement
   const handleProfileViewOnly = (_id: string, _action: string) => {
@@ -41,7 +43,37 @@ const Profile: React.FC = () => {
         </div>
 
         {isEditing ? (
-          user && <EditProfile user={user as any} />
+          <>
+            <div className="flex border-b border-gray-700 mb-6">
+              <button
+                className={`px-4 py-2 font-medium ${
+                  activeTab === "profile"
+                    ? "text-[#7C3AED] border-b-2 border-[#7C3AED]"
+                    : "text-gray-400 hover:text-gray-200"
+                }`}
+                onClick={() => setActiveTab("profile")}
+              >
+                Profile Details
+              </button>
+              <button
+                className={`px-4 py-2 font-medium ${
+                  activeTab === "github"
+                    ? "text-[#7C3AED] border-b-2 border-[#7C3AED]"
+                    : "text-gray-400 hover:text-gray-200"
+                }`}
+                onClick={() => setActiveTab("github")}
+              >
+                GitHub Profile
+              </button>
+            </div>
+
+            {activeTab === "profile" && user && (
+              <EditProfile user={user as any} />
+            )}
+            {activeTab === "github" && user && (
+              <GitHubProfile userId={user._id} />
+            )}
+          </>
         ) : (
           <div className="flex justify-center">
             {user && (

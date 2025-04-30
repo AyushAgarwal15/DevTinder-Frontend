@@ -214,7 +214,11 @@ const Feed: React.FC = () => {
                   }}
                 >
                   <div className="pointer-events-none relative">
-                    <UserCard user={feed[1]} onHandleSendRequest={null} />
+                    <UserCard
+                      user={feed[1]}
+                      onHandleSendRequest={handleSendRequest}
+                      isPreview={true}
+                    />
                     <div className="absolute inset-0 bg-black/50 rounded-lg"></div>
                   </div>
                 </motion.div>

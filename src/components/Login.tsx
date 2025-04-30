@@ -10,7 +10,7 @@ import { addRequests } from "../utils/requestSlice";
 import Logo from "./Logo";
 import authThumbnail from "../assets/images/auth_thumbnail.jpeg";
 import { RootState } from "../utils/types";
-import { FaExclamationCircle } from "react-icons/fa";
+import { FaExclamationCircle, FaGithub } from "react-icons/fa";
 
 interface User {
   _id: string;
@@ -140,6 +140,10 @@ const Login: React.FC = () => {
     }
   };
 
+  const handleGitHubLogin = () => {
+    window.location.href = `${BASE_URL}/auth/github`;
+  };
+
   // Return a loading state while checking auth
   if (isCheckingAuth) {
     return (
@@ -168,6 +172,23 @@ const Login: React.FC = () => {
                 <p className="text-gray-400 mt-2">
                   Sign in to continue to DevTinder
                 </p>
+              </div>
+
+              {/* GitHub Login Button */}
+              <div className="mb-4">
+                <button
+                  onClick={handleGitHubLogin}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  <FaGithub className="text-xl" />
+                  Sign in with GitHub
+                </button>
+              </div>
+
+              <div className="flex items-center my-4">
+                <div className="flex-1 h-px bg-gray-700"></div>
+                <div className="px-4 text-sm text-gray-500">OR</div>
+                <div className="flex-1 h-px bg-gray-700"></div>
               </div>
 
               <div className="w-full mb-4">
@@ -202,60 +223,40 @@ const Login: React.FC = () => {
               </div>
 
               {error && (
-                <div className="bg-red-500/20 border border-red-500 text-red-300 px-4 py-3 rounded-lg mb-6 flex items-center">
-                  <FaExclamationCircle className="h-5 w-5 mr-2" />
+                <div className="mb-4 flex items-center gap-2 text-red-400 bg-red-900/20 p-3 rounded-lg">
+                  <FaExclamationCircle />
                   <span>{error}</span>
                 </div>
               )}
 
               <button
-                className={`w-full py-3 rounded-lg font-bold text-white cursor-pointer ${
-                  isLoading
-                    ? "bg-gray-600 cursor-not-allowed"
-                    : "bg-[#7C3AED] hover:bg-[#6D28D9]"
-                } transition-colors`}
+                className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
                 onClick={handleLogin}
                 disabled={isLoading}
               >
                 {isLoading ? <ButtonLoader text="Signing in..." /> : "Sign In"}
               </button>
 
-              <div className="relative flex items-center gap-3 my-6">
-                <div className="flex-grow h-px bg-gray-700"></div>
-                <span className="text-gray-500 text-sm">OR</span>
-                <div className="flex-grow h-px bg-gray-700"></div>
-              </div>
-
-              <p className="text-center mt-6 text-gray-400">
+              <p className="text-center text-gray-400 mt-6">
                 Don't have an account?{" "}
                 <Link
                   to="/signup"
-                  className="text-[#7C3AED] cursor-pointer font-semibold"
+                  className="text-[#7C3AED] hover:underline font-medium"
                 >
-                  Sign up
+                  Sign Up
                 </Link>
               </p>
             </div>
           </div>
         </div>
 
-        {/* Right side: Image container (hidden on mobile) */}
-        <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
+        {/* Right side: Image */}
+        <div className="hidden lg:block lg:w-1/2 bg-cover bg-center">
           <img
             src={authThumbnail}
-            alt="Developer coding"
+            alt="Developers connecting"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1c2030]/40 to-[#7C3AED]/30">
-            <div className="absolute bottom-10 left-10 max-w-md">
-              <h2 className="text-4xl font-bold mb-3 text-white drop-shadow-lg">
-                Connect with developers worldwide
-              </h2>
-              <p className="text-white text-xl drop-shadow-md">
-                Find your perfect coding partner on DevTinder
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

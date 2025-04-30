@@ -6,7 +6,13 @@ import { removeConnection } from "../utils/connectionSlice";
 import { BASE_URL } from "../utils/constants";
 import { useToast } from "../context/ToastContext";
 import ConfirmationModal from "./ConfirmationModal";
-import { FaLinkedin, FaGithub, FaGlobe, FaTimes } from "react-icons/fa";
+import {
+  FaLinkedin,
+  FaGithub,
+  FaGlobe,
+  FaTimes,
+  FaUserCircle,
+} from "react-icons/fa";
 import { BsChatDots } from "react-icons/bs";
 
 interface Connection {
@@ -184,6 +190,17 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ connection }) => {
           ) : (
             <p className="text-gray-500 text-xs italic">No skills listed</p>
           )}
+        </div>
+
+        {/* View Profile Button */}
+        <div className="mt-6">
+          <Link
+            to={`/user/${_id}`}
+            className="w-full flex items-center justify-center gap-2 py-2 bg-[#252b3d] border border-[#7C3AED]/30 text-[#7C3AED] rounded-lg hover:bg-[#7C3AED]/10 transition-colors"
+          >
+            <FaUserCircle />
+            View Full Profile
+          </Link>
         </div>
       </div>
 

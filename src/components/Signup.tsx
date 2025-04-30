@@ -8,7 +8,7 @@ import { useToast } from "../context/ToastContext";
 import Logo from "./Logo";
 import authThumbnail from "../assets/images/auth_thumbnail.jpeg";
 import { RootState } from "../utils/types";
-import { FaExclamationCircle } from "react-icons/fa";
+import { FaExclamationCircle, FaGithub } from "react-icons/fa";
 
 interface FormData {
   firstName: string;
@@ -168,6 +168,10 @@ const Signup: React.FC = () => {
     }
   };
 
+  const handleGitHubSignup = () => {
+    window.location.href = `${BASE_URL}/auth/github`;
+  };
+
   // Return a loading state while checking auth
   if (isCheckingAuth) {
     return (
@@ -196,6 +200,23 @@ const Signup: React.FC = () => {
                 <p className="text-gray-400 mt-2">
                   Connect with developers around the world
                 </p>
+              </div>
+
+              {/* GitHub Signup Button */}
+              <div className="mb-4">
+                <button
+                  onClick={handleGitHubSignup}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  <FaGithub className="text-xl" />
+                  Sign up with GitHub
+                </button>
+              </div>
+
+              <div className="flex items-center my-4">
+                <div className="flex-1 h-px bg-gray-700"></div>
+                <div className="px-4 text-sm text-gray-500">OR</div>
+                <div className="flex-1 h-px bg-gray-700"></div>
               </div>
 
               <form onSubmit={handleSignup} className="space-y-4">

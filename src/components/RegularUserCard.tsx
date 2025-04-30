@@ -1,12 +1,15 @@
 import React from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { User } from "../utils/types";
+import { Link } from "react-router-dom";
 import {
   FaGithub,
   FaLinkedin,
   FaGlobe,
   FaHeart,
   FaTimes,
+  FaUserCircle,
+  FaEye,
 } from "react-icons/fa";
 
 interface RegularUserCardProps {
@@ -132,6 +135,16 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
         }
         {...cardAnimation}
       >
+        {/* View Profile Quick Button */}
+        <Link
+          to={`/user/${_id}`}
+          className="absolute top-3 right-3 z-20 bg-[#7C3AED]/80 text-white p-2 rounded-full shadow-lg hover:bg-[#7C3AED] transition-colors pointer-events-auto"
+          onClick={(e) => e.stopPropagation()}
+          title="View Full Profile"
+        >
+          <FaEye size={16} />
+        </Link>
+
         <figure className="relative h-56 sm:h-60 overflow-hidden pointer-events-none bg-gradient-to-b from-gray-900 to-gray-800">
           {photoUrl && (
             <img
@@ -202,7 +215,7 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
                     href={githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-200 hover:text-white pointer-events-auto transition-colors"
+                    className="text-gray-300 hover:text-white pointer-events-auto transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <FaGithub size={18} />
@@ -224,27 +237,22 @@ const RegularUserCard: React.FC<RegularUserCardProps> = ({
             </div>
           )}
 
+          {/* Like/Ignore Buttons */}
           {onHandleSendRequest && (
-            <div className="card-actions justify-end mt-1 pointer-events-auto">
+            <div className="flex justify-between mt-4 gap-4 pointer-events-auto">
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onHandleSendRequest(_id, "ignored");
-                }}
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-500 hover:bg-red-600 shadow-lg shadow-red-800/20 transition-all hover:scale-105 flex items-center justify-center text-white border-none cursor-pointer"
-                aria-label="Ignore"
+                onClick={() => onHandleSendRequest(_id, "ignored")}
+                className="flex-1 py-2 bg-red-500/10 text-red-500 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/20 transition-colors"
               >
-                <FaTimes className="h-5 w-5 sm:h-6 sm:w-6" />
+                <FaTimes />
+                <span>Ignore</span>
               </button>
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onHandleSendRequest(_id, "interested");
-                }}
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#7C3AED] hover:bg-[#6D28D9] shadow-lg shadow-purple-900/30 transition-all hover:scale-105 flex items-center justify-center text-white border-none cursor-pointer"
-                aria-label="Like"
+                onClick={() => onHandleSendRequest(_id, "interested")}
+                className="flex-1 py-2 bg-green-500/10 text-green-500 rounded-lg flex items-center justify-center gap-2 hover:bg-green-500/20 transition-colors"
               >
-                <FaHeart className="h-5 w-5 sm:h-6 sm:w-6" />
+                <FaHeart />
+                <span>Like</span>
               </button>
             </div>
           )}

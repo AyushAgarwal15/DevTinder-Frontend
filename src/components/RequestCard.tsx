@@ -4,7 +4,7 @@ import UserDetailModal from "./UserDetailModal";
 import ConfirmationModal from "./ConfirmationModal";
 import { User } from "../utils/types";
 import { IoEyeOutline } from "react-icons/io5";
-import { FaTimes, FaCheck } from "react-icons/fa";
+import { FaTimes, FaCheck, FaUserCircle } from "react-icons/fa";
 
 interface RequestCardProps {
   request: User;

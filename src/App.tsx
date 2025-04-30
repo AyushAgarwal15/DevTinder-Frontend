@@ -17,6 +17,7 @@ import Signup from "./components/Signup";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
 import Chat from "./components/Chat";
+import UserProfileView from "./components/UserProfileView";
 import SocketProvider from "./context/SocketContext";
 import axios from "axios";
 import { BASE_URL } from "./utils/constants";
@@ -85,6 +86,8 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 {/* Chat route outside of Body to make it full screen without navbar/footer */}
                 <Route path="/chat/:targetUserId" element={<Chat />} />
+                {/* User profile view route */}
+                <Route path="/user/:userId" element={<UserProfileView />} />
               </Routes>
               <AuthListener />
             </BrowserRouter>

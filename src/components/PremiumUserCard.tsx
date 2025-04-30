@@ -8,7 +8,10 @@ import {
   FaGlobe,
   FaHeart,
   FaTimes,
+  FaUserCircle,
+  FaEye,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 interface PremiumUserCardProps {
   user: User;
@@ -97,7 +100,7 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
   return (
     <div className="relative flex justify-center w-full">
       {/* Premium badge */}
-      <div className="absolute top-3 right-3 z-10 bg-gradient-to-r from-amber-500 to-yellow-300 px-2 py-1 rounded-full flex items-center text-xs font-bold shadow-lg">
+      <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-amber-500 to-yellow-300 px-2 py-1 rounded-full flex items-center text-xs font-bold shadow-lg">
         <RiVipCrownFill className="text-amber-100 mr-1" />
         <span className="text-black font-bold">FOUNDER</span>
       </div>
@@ -140,6 +143,16 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
         }
         {...cardAnimation}
       >
+        {/* View Profile Quick Button */}
+        <Link
+          to={`/user/${_id}`}
+          className="absolute top-3 right-3 z-20 bg-amber-500/80 text-white p-2 rounded-full shadow-lg hover:bg-amber-500 transition-colors pointer-events-auto"
+          onClick={(e) => e.stopPropagation()}
+          title="View Full Profile"
+        >
+          <FaEye size={16} />
+        </Link>
+
         <figure className="relative h-56 sm:h-60 overflow-hidden pointer-events-none bg-gradient-to-b from-slate-900 to-slate-800">
           <div className="absolute top-0 left-0 w-full h-full z-10">
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-yellow-500/10 to-transparent"></div>
@@ -264,27 +277,28 @@ const PremiumUserCard: React.FC<PremiumUserCardProps> = ({
             </div>
           </div>
 
+          {/* Like/Ignore Buttons */}
           {onHandleSendRequest && (
-            <div className="card-actions justify-end mt-1 pointer-events-auto">
+            <div className="flex justify-between mt-4 gap-4 pointer-events-auto">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onHandleSendRequest(_id, "ignored");
                 }}
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-600 hover:bg-red-700 shadow-lg shadow-red-800/30 transition-all hover:scale-105 flex items-center justify-center text-white border-none cursor-pointer"
-                aria-label="Ignore"
+                className="flex-1 py-2 bg-red-500/10 text-red-500 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/20 transition-colors"
               >
-                <FaTimes className="h-5 w-5 sm:h-6 sm:w-6" />
+                <FaTimes />
+                <span>Ignore</span>
               </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onHandleSendRequest(_id, "interested");
                 }}
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-lg shadow-amber-800/30 transition-all hover:scale-105 flex items-center justify-center text-white border-none cursor-pointer"
-                aria-label="Like"
+                className="flex-1 py-2 bg-amber-500/10 text-amber-400 rounded-lg flex items-center justify-center gap-2 hover:bg-amber-500/20 transition-colors"
               >
-                <FaHeart className="h-5 w-5 sm:h-6 sm:w-6" />
+                <FaHeart />
+                <span>Like</span>
               </button>
             </div>
           )}
