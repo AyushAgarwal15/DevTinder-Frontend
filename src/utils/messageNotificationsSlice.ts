@@ -2,8 +2,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface MessageNotification {
   userId: string;
-  name: string;
-  profilePic?: string;
+  firstName: string;
+  lastName?: string;
+  photoUrl?: string;
   lastMessage: string;
   timestamp: string;
   isRead: boolean;
@@ -16,7 +17,7 @@ interface MessageNotificationsState {
 
 const initialState: MessageNotificationsState = {
   unreadCount: 0,
-  notifications: [], // Will store {userId, name, profilePic, lastMessage, timestamp}
+  notifications: [], // Will store {userId, firstName, lastName, photoUrl, lastMessage, timestamp}
 };
 
 const messageNotificationsSlice = createSlice({

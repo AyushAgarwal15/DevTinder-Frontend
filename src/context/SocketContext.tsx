@@ -73,8 +73,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         dispatch(
           addNotification({
             userId: message.senderId._id,
-            name: message.senderId.firstName || "User",
-            profilePic: message.senderId.photoUrl,
+            firstName: message.senderId.firstName || "User",
+            lastName: message.senderId.lastName || "",
+            photoUrl: message.senderId.photoUrl,
             lastMessage: message.text,
             timestamp: message.createdAt || new Date().toISOString(),
           })

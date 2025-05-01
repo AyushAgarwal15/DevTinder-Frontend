@@ -43,7 +43,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
             <img
               src={
                 !imageError
-                  ? request.photoUrl
+                  ? request?.photoUrl
                   : "https://via.placeholder.com/150?text=Dev"
               }
               alt={`${request.firstName} ${request.lastName}`}

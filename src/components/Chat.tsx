@@ -125,6 +125,8 @@ const Chat: React.FC = () => {
 
     socketRef.current.emit("sendMessage", {
       firstName: user?.firstName,
+      lastName: user?.lastName,
+      photoUrl: user?.photoUrl,
       userId,
       targetUserId,
       text: newMessage,
@@ -212,6 +214,8 @@ const Chat: React.FC = () => {
     console.log("Emitting joinChat event for:", targetUserId);
     socketRef.current.emit("joinChat", {
       firstName: user?.firstName,
+      lastName: user?.lastName,
+      photoUrl: user?.photoUrl,
       userId,
       targetUserId,
     });
@@ -291,6 +295,8 @@ const Chat: React.FC = () => {
       if (socketRef.current) {
         socketRef.current.emit("joinChat", {
           firstName: user?.firstName,
+          lastName: user?.lastName,
+          photoUrl: user?.photoUrl,
           userId,
           targetUserId,
         });
