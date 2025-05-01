@@ -33,6 +33,22 @@ const AuthListener = () => {
 
   useEffect(() => {
     const checkAuthOnNavigation = async () => {
+      console.log(
+        "AuthListener checking auth status at path:",
+        location.pathname
+      );
+      console.log(
+        "Current user state:",
+        user ? "Authenticated" : "Not authenticated"
+      );
+
+      // Special handling for after GitHub auth redirect
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get("error");
+      if (error) {
+        console.error("GitHub auth error:", error);
+      }
+
       // Only check on auth pages
       if (location.pathname !== "/login" && location.pathname !== "/signup") {
         return;
@@ -46,9 +62,15 @@ const AuthListener = () => {
         }
 
         // If not in Redux, check with server
+        console.log("Checking authentication with server...");
         const res = await axios.get(`${BASE_URL}/profile/view`, {
           withCredentials: true,
         });
+
+        console.log(
+          "Server auth response:",
+          res.data ? "Authenticated" : "Not authenticated"
+        );
 
         if (res.data) {
           // User is authenticated, update Redux and redirect
@@ -57,6 +79,7 @@ const AuthListener = () => {
         }
       } catch (error) {
         // If error, user is not authenticated, allow auth page access
+        console.log("Auth check error:", error);
         console.log("Auth navigation check: not authenticated");
       }
     };

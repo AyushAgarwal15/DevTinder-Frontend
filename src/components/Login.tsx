@@ -141,6 +141,7 @@ const Login: React.FC = () => {
   };
 
   const handleGitHubLogin = () => {
+    console.log("GitHub login: Redirecting to", `${BASE_URL}/auth/github`);
     window.location.href = `${BASE_URL}/auth/github`;
   };
 

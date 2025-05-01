@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import EditProfile from "./EditProfile";
 import UserCard from "./UserCard";
@@ -6,10 +6,19 @@ import GitHubProfile from "./GitHubProfile";
 import { RootState, User } from "../utils/types";
 import { FaEye, FaEdit } from "react-icons/fa";
 
+console.log("Profile component loading");
+
 const Profile: React.FC = () => {
   const user = useSelector((store: RootState) => store.user);
   const [isEditing, setIsEditing] = useState(true);
   const [activeTab, setActiveTab] = useState<"profile" | "github">("profile");
+
+  useEffect(() => {
+    console.log(
+      "Profile useEffect running, user state:",
+      user ? "User exists" : "No user"
+    );
+  }, []);
 
   // Dummy handler for UserCard to satisfy its props requirement
   const handleProfileViewOnly = (_id: string, _action: string) => {
