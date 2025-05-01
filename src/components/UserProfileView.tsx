@@ -189,9 +189,9 @@ const UserProfileView: React.FC = () => {
 
         {/* User Profile Header */}
         <div className="bg-[#252b3d] rounded-lg border border-gray-800 overflow-hidden mb-6">
-          <div className="h-48 bg-gradient-to-r from-[#7C3AED]/20 to-[#6D28D9]/20 relative">
+          <div className="h-72 sm:h-48 bg-gradient-to-r from-[#7C3AED]/20 to-[#6D28D9]/20 relative">
             <div className="absolute bottom-0 left-0 w-full p-6 pt-20 bg-gradient-to-t from-[#252b3d] to-transparent">
-              <div className="flex flex-col sm:flex-row items-start sm:items-end gap-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-end sm:gap-6">
                 <div className="w-32 h-32 rounded-lg border-4 border-[#252b3d] overflow-hidden bg-gray-800 flex-shrink-0">
                   <img
                     src={user.photoUrl || "https://via.placeholder.com/200"}

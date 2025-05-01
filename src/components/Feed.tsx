@@ -103,7 +103,12 @@ const Feed: React.FC = () => {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
     exit: (direction: ExitDirection) => ({
-      x: direction === "left" ? -500 : direction === "right" ? 500 : 0,
+      x:
+        direction === "left"
+          ? "calc(-100% - 50px)"
+          : direction === "right"
+          ? "calc(100% + 50px)"
+          : 0,
       opacity: 0,
       rotate: direction === "left" ? -20 : direction === "right" ? 20 : 0,
       transition: { duration: 0.3, ease: "easeInOut" },
@@ -113,12 +118,12 @@ const Feed: React.FC = () => {
   // Guide animation to show swiping
   const guideVariants: Variants = {
     swipeRight: {
-      x: [0, 80, 0],
+      x: [0, "calc(30% - 10px)", 0],
       opacity: [0.5, 1, 0.5],
       transition: { duration: 2, repeat: 1, repeatType: "reverse" as const },
     },
     swipeLeft: {
-      x: [0, -80, 0],
+      x: [0, "calc(-30% + 10px)", 0],
       opacity: [0.5, 1, 0.5],
       transition: {
         duration: 2,
@@ -142,7 +147,7 @@ const Feed: React.FC = () => {
               className="flex items-center gap-2 px-4 py-2 bg-[#252b3d] text-gray-300 hover:bg-[#303952] rounded-lg transition-colors cursor-pointer"
             >
               <FaSync className={isLoading ? "animate-spin" : ""} />
-              Refresh Feed
+              <span className="hidden sm:inline">Refresh Feed</span>
             </button>
           )}
         </div>
@@ -153,14 +158,14 @@ const Feed: React.FC = () => {
           <Loader size="large" text="Finding Matches..." />
         </div>
       ) : feed && feed.length > 0 ? (
-        <div className="flex justify-center my-10 h-[550px] relative">
+        <div className="flex justify-center my-10 min-h-[550px] h-auto relative">
           {/* Visual guide overlay */}
           {showGuide && (
             <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center">
-              <div className="relative w-96 h-96 flex items-center justify-center">
+              <div className="relative w-full max-w-96 h-96 flex items-center justify-center">
                 {/* Right swipe guide */}
                 <motion.div
-                  className="absolute right-[-50px] top-1/2 transform -translate-y-1/2 bg-green-500/80 text-white px-3 py-2 rounded-lg cursor-default"
+                  className="absolute right-0 sm:right-[-50px] top-1/2 transform -translate-y-1/2 bg-green-500/80 text-white px-3 py-2 rounded-lg cursor-default"
                   variants={guideVariants}
                   animate="swipeRight"
                 >
@@ -172,7 +177,7 @@ const Feed: React.FC = () => {
 
                 {/* Left swipe guide */}
                 <motion.div
-                  className="absolute left-[-50px] top-1/2 transform -translate-y-1/2 bg-red-500/80 text-white px-3 py-2 rounded-lg cursor-default"
+                  className="absolute left-0 sm:left-[-50px] top-1/2 transform -translate-y-1/2 bg-red-500/80 text-white px-3 py-2 rounded-lg cursor-default"
                   variants={guideVariants}
                   animate="swipeLeft"
                 >
@@ -187,7 +192,7 @@ const Feed: React.FC = () => {
 
           <AnimatePresence custom={exitDirection}>
             {/* Properly positioned card stack */}
-            <div className="relative w-96 h-[550px]">
+            <div className="relative w-full max-w-96 h-auto min-h-[550px]">
               {/* Background card first (lower z-index) */}
               {feed && feed.length > 1 && (
                 <motion.div

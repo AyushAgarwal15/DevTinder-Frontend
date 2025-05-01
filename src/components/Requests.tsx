@@ -102,7 +102,7 @@ const Requests = () => {
             disabled={isLoading}
           >
             <FaSync className={isLoading ? "animate-spin" : ""} />
-            Refresh
+            <span className="hidden sm:inline">Refresh</span>
           </button>
         </div>
 

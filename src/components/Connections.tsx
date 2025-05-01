@@ -82,14 +82,6 @@ const Connections: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => fetchConnections(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-[#252b3d] text-gray-300 hover:bg-[#303952] rounded-lg transition-colors cursor-pointer"
-              disabled={isLoading}
-            >
-              <FaSync className={isLoading ? "animate-spin" : ""} />
-              Refresh
-            </button>
             <div className="relative w-full md:w-auto">
               <input
                 type="text"
@@ -100,6 +92,14 @@ const Connections: React.FC = () => {
               />
               <FaSearch className="h-5 w-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
+            <button
+              onClick={() => fetchConnections(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-[#252b3d] text-gray-300 hover:bg-[#303952] rounded-lg transition-colors cursor-pointer"
+              disabled={isLoading}
+            >
+              <FaSync className={isLoading ? "animate-spin" : ""} />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
           </div>
         </div>
 

@@ -335,7 +335,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
                 Skills
               </span>
             </label>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="text"
                 name="skillInput"
@@ -347,10 +347,10 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
               <button
                 type="button"
                 onClick={handleSkillAdd}
-                className="px-6 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors cursor-pointer flex items-center gap-2"
+                className="px-6 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-[#6D28D9] transition-colors cursor-pointer flex items-center justify-center gap-2"
               >
                 <FaPlus size={14} />
-                Add
+                <span className="sm:inline">Add</span>
               </button>
             </div>
             <div className="flex flex-wrap gap-2 mt-4">
