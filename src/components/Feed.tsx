@@ -6,29 +6,11 @@ import { addUserToTheFeed, removeUserFromFeed } from "../utils/feedSlice";
 import UserCard from "./UserCard";
 import { useToast } from "../context/ToastContext";
 import Loader from "./Loader";
-import {
-  motion,
-  AnimatePresence,
-  MotionStyle,
-  Variant,
-  Variants,
-} from "framer-motion";
+import { motion, AnimatePresence, MotionStyle, Variants } from "framer-motion";
 import { AppDispatch, RootState, User } from "../utils/types";
-import {
-  FaChevronLeft,
-  FaChevronRight,
-  FaHeart,
-  FaTimes,
-  FaSync,
-} from "react-icons/fa";
+import { FaHeart, FaTimes, FaSync } from "react-icons/fa";
 
 type ExitDirection = "left" | "right" | null;
-
-interface CardVariants {
-  hidden: Variant;
-  visible: Variant;
-  exit: (direction: ExitDirection) => Variant;
-}
 
 const Feed: React.FC = () => {
   const user = useSelector((store: RootState) => store.user);
@@ -59,7 +41,9 @@ const Feed: React.FC = () => {
       dispatch(addUserToTheFeed(res?.data?.data));
     } catch (err) {
       console.error(err);
-      toast.error("Failed to load feed. Please try again later.");
+      toast.error(
+        "Unable to load developer suggestions. Please refresh the page or try again later."
+      );
     } finally {
       setIsLoading(false);
     }

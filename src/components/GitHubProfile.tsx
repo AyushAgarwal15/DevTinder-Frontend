@@ -77,7 +77,7 @@ const GitHubProfile: React.FC<GitHubProfileProps> = ({ userId }) => {
       if (error.response?.status === 404) {
         setIsConnected(false);
       } else {
-        toast.error("Failed to load GitHub profile");
+        toast.error("Unable to load GitHub profile. Please try again later.");
         console.error("Error fetching GitHub profile:", error);
       }
     } finally {
@@ -96,9 +96,9 @@ const GitHubProfile: React.FC<GitHubProfileProps> = ({ userId }) => {
         }
       );
       await fetchGitHubProfile();
-      toast.success("GitHub data refreshed successfully");
+      toast.success("GitHub data updated successfully!");
     } catch (error) {
-      toast.error("Failed to refresh GitHub data");
+      toast.error("Unable to refresh GitHub data. Please try again later.");
       console.error("Error refreshing GitHub data:", error);
     } finally {
       setIsRefreshing(false);

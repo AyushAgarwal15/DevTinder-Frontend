@@ -167,10 +167,10 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
       dispatch(addUser(response?.data?.data));
       toast.success("Profile updated successfully!");
     } catch (err: any) {
-      setError(err?.response?.data || "Something went wrong 💀");
-      toast.error(
-        err?.response?.data || "Something went wrong updating your profile"
-      );
+      const errorMessage =
+        "Unable to update your profile. Please try again later.";
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -183,13 +183,13 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      toast.error("Please upload an image file");
+      toast.error("Please upload an image file (JPG, PNG, etc.)");
       return;
     }
 
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("File size should be less than 5MB");
+      toast.error("Image size should be less than 5MB");
       return;
     }
 
@@ -215,7 +215,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
       }));
       toast.success("Profile picture updated successfully!");
     } catch (error: any) {
-      toast.error(error.response?.data || "Failed to upload image");
+      toast.error("Unable to upload image. Please try again later.");
       console.error("Error uploading image:", error);
     } finally {
       setIsUploading(false);

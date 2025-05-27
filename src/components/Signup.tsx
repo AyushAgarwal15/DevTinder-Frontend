@@ -167,16 +167,16 @@ const Signup: React.FC = () => {
 
     if (!allRequirementsMet) {
       setError(
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+        "Please ensure your password meets all the security requirements below"
       );
-      toast.error("Please ensure your password meets all the requirements");
+      toast.error("Please check all password requirements");
       return;
     }
 
     // Basic validation
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      toast.error("Passwords do not match");
+      setError("The passwords you entered don't match");
+      toast.error("Passwords don't match");
       return;
     }
 
@@ -196,19 +196,23 @@ const Signup: React.FC = () => {
       );
 
       dispatch(addUser(res?.data));
-      toast.success("Signup successful! Welcome to DevTinder!");
+      toast.success(
+        "Welcome to DevTinder! Your account has been created successfully."
+      );
       navigate("/profile");
     } catch (err: any) {
-      console.log(err);
-      let errorMessage = err?.response?.data || "Something went wrong";
+      let errorMessage =
+        "Unable to create your account. Please try again later.";
 
-      // Check for MongoDB duplicate key error
+      // Check for specific error cases
       if (
-        errorMessage.includes("E11000 duplicate key error") &&
-        errorMessage.includes("emailId")
+        err?.response?.data?.includes("E11000 duplicate key error") &&
+        err?.response?.data?.includes("emailId")
       ) {
         errorMessage =
           "This email is already registered. Please use a different email or login to your existing account.";
+      } else if (err?.response?.status === 400) {
+        errorMessage = "Please fill in all required fields correctly.";
       }
 
       setError(errorMessage);

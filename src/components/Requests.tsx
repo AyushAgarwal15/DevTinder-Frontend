@@ -40,8 +40,9 @@ const Requests = () => {
       dispatch(addRequests(res?.data?.data));
       setIsLoading(false);
     } catch (err: any) {
-      const errorMessage = err?.response?.data || "Something went wrong";
-      toast.error(errorMessage);
+      toast.error(
+        "Unable to load connection requests. Please try again later."
+      );
       console.error(err);
       setIsLoading(false);
     }
@@ -63,15 +64,16 @@ const Requests = () => {
       if (status === "accepted") {
         // Clear connections in Redux to force a refresh when navigating to connections page
         dispatch(removeConnections());
-        toast.success("Connection request accepted!");
+        toast.success("Connection request accepted successfully!");
       }
 
       if (status === "rejected") {
-        toast.success("Connection request rejected!");
+        toast.success("Connection request rejected successfully!");
       }
     } catch (err: any) {
-      const errorMessage = err?.response?.data || "Failed to accept request";
-      toast.error(errorMessage);
+      toast.error(
+        "Unable to process the connection request. Please try again."
+      );
       console.error(err);
     } finally {
       setProcessingId(null);

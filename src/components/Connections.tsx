@@ -47,8 +47,7 @@ const Connections: React.FC = () => {
       dispatch(addConnections(res?.data?.data));
       setIsLoading(false);
     } catch (err: any) {
-      const errorMessage = err?.response?.data || "Something went wrong";
-      toast.error(errorMessage);
+      toast.error("Unable to load your connections. Please try again later.");
       console.error(err);
       setIsLoading(false);
     }

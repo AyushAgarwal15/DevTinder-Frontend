@@ -165,7 +165,7 @@ const UserProfileView: React.FC = () => {
     return (
       <div className="min-h-screen bg-[#1c2030] py-8 px-4 flex flex-col justify-center items-center">
         <div className="text-red-500 mb-4 text-xl">
-          ⚠️ {error || "User not found"}
+          ⚠️ {error || "We couldn't find this developer's profile"}
         </div>
         <button
           onClick={() => navigate(-1)}

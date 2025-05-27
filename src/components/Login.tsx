@@ -137,7 +137,16 @@ const Login: React.FC = () => {
       fetchRequests();
       navigate("/");
     } catch (err: any) {
-      const errorMessage = err?.response?.data || "Something went wrong";
+      let errorMessage =
+        "Unable to log in. Please check your email and password.";
+
+      // Handle specific error cases
+      if (err?.response?.status === 401) {
+        errorMessage = "Incorrect email or password. Please try again.";
+      } else if (err?.response?.status === 404) {
+        errorMessage = "Account not found. Please sign up first.";
+      }
+
       setError(errorMessage);
       toast.error(errorMessage);
       console.error(err);
