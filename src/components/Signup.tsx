@@ -8,7 +8,14 @@ import { useToast } from "../context/ToastContext";
 import Logo from "./Logo";
 import AuthThumbnail from "./AuthThumbnail";
 import { RootState } from "../utils/types";
-import { FaExclamationCircle, FaGithub } from "react-icons/fa";
+import {
+  FaExclamationCircle,
+  FaGithub,
+  FaEye,
+  FaEyeSlash,
+  FaCheckCircle,
+  FaTimesCircle,
+} from "react-icons/fa";
 
 interface FormData {
   firstName: string;
@@ -25,6 +32,13 @@ interface User {
   email: string;
 }
 
+interface PasswordRequirements {
+  hasUpperCase: boolean;
+  hasLowerCase: boolean;
+  hasNumber: boolean;
+  hasSpecialChar: boolean;
+}
+
 const Signup: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -33,6 +47,16 @@ const Signup: React.FC = () => {
     password: "",
     confirmPassword: "",
   });
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
+  const [passwordRequirements, setPasswordRequirements] =
+    useState<PasswordRequirements>({
+      hasUpperCase: false,
+      hasLowerCase: false,
+      hasNumber: false,
+      hasSpecialChar: false,
+    });
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
@@ -111,16 +135,43 @@ const Signup: React.FC = () => {
     checkAuthStatus();
   }, [dispatch, navigate, user]);
 
+  const validatePassword = (password: string) => {
+    setPasswordRequirements({
+      hasUpperCase: /[A-Z]/.test(password),
+      hasLowerCase: /[a-z]/.test(password),
+      hasNumber: /[0-9]/.test(password),
+      hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+    });
+  };
+
+  // Update handleChange to include password validation
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    if (name === "password") {
+      validatePassword(value);
+    }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check if all password requirements are met
+    const allRequirementsMet = Object.values(passwordRequirements).every(
+      (requirement) => requirement === true
+    );
+
+    if (!allRequirementsMet) {
+      setError(
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+      );
+      toast.error("Please ensure your password meets all the requirements");
+      return;
+    }
 
     // Basic validation
     if (formData.password !== formData.confirmPassword) {
@@ -253,30 +304,133 @@ const Signup: React.FC = () => {
                   <label className="block text-gray-300 font-semibold mb-2">
                     Password
                   </label>
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="Create a password"
-                    className="w-full px-4 py-3 bg-[#252b3d] border border-gray-700 rounded-lg text-gray-200 focus:border-[#7C3AED] focus:outline-none"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="Create a password"
+                      className="w-full px-4 py-3 bg-[#252b3d] border border-gray-700 rounded-lg text-gray-200 focus:border-[#7C3AED] focus:outline-none"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                    />
+                    {formData.password !== "" && (
+                      <button
+                        type="button"
+                        className="absolute cursor-pointer right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200 focus:outline-none"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <FaEyeSlash size={18} />
+                        ) : (
+                          <FaEye size={18} />
+                        )}
+                      </button>
+                    )}
+                  </div>
+                  <div className="mt-2 space-y-1 text-sm flex justify-between flex-wrap gap-2">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        {passwordRequirements.hasUpperCase ? (
+                          <FaCheckCircle className="text-green-500" size={14} />
+                        ) : (
+                          <FaTimesCircle className="text-gray-400" size={14} />
+                        )}
+                        <span
+                          className={`${
+                            passwordRequirements.hasUpperCase
+                              ? "text-green-500"
+                              : "text-gray-400"
+                          }`}
+                        >
+                          Uppercase letter
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {passwordRequirements.hasLowerCase ? (
+                          <FaCheckCircle className="text-green-500" size={14} />
+                        ) : (
+                          <FaTimesCircle className="text-gray-400" size={14} />
+                        )}
+                        <span
+                          className={`${
+                            passwordRequirements.hasLowerCase
+                              ? "text-green-500"
+                              : "text-gray-400"
+                          }`}
+                        >
+                          Lowercase letter
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        {passwordRequirements.hasNumber ? (
+                          <FaCheckCircle className="text-green-500" size={14} />
+                        ) : (
+                          <FaTimesCircle className="text-gray-400" size={14} />
+                        )}
+                        <span
+                          className={`${
+                            passwordRequirements.hasNumber
+                              ? "text-green-500"
+                              : "text-gray-400"
+                          }`}
+                        >
+                          Number
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {passwordRequirements.hasSpecialChar ? (
+                          <FaCheckCircle className="text-green-500" size={14} />
+                        ) : (
+                          <FaTimesCircle className="text-gray-400" size={14} />
+                        )}
+                        <span
+                          className={`${
+                            passwordRequirements.hasSpecialChar
+                              ? "text-green-500"
+                              : "text-gray-400"
+                          }`}
+                        >
+                          Special character
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div>
                   <label className="block text-gray-300 font-semibold mb-2">
                     Confirm Password
                   </label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="Confirm your password"
-                    className="w-full px-4 py-3 bg-[#252b3d] border border-gray-700 rounded-lg text-gray-200 focus:border-[#7C3AED] focus:outline-none"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      name="confirmPassword"
+                      placeholder="Confirm your password"
+                      className="w-full px-4 py-3 bg-[#252b3d] border border-gray-700 rounded-lg text-gray-200 focus:border-[#7C3AED] focus:outline-none"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      required
+                    />
+                    {formData.confirmPassword !== "" && (
+                      <button
+                        type="button"
+                        className="absolute cursor-pointer right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200 focus:outline-none"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                      >
+                        {showConfirmPassword ? (
+                          <FaEyeSlash size={18} />
+                        ) : (
+                          <FaEye size={18} />
+                        )}
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {error && (

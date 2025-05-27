@@ -10,7 +10,12 @@ import { addRequests } from "../utils/requestSlice";
 import Logo from "./Logo";
 import AuthThumbnail from "./AuthThumbnail";
 import { RootState } from "../utils/types";
-import { FaExclamationCircle, FaGithub } from "react-icons/fa";
+import {
+  FaExclamationCircle,
+  FaGithub,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
 
 interface User {
   _id: string;
@@ -20,8 +25,9 @@ interface User {
 }
 
 const Login: React.FC = () => {
-  const [emailId, setEmail] = useState<string>("guestuser@gmail.com");
-  const [password, setPassword] = useState<string>("@Guest.1234");
+  const [emailId, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState("password");
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
@@ -188,17 +194,35 @@ const Login: React.FC = () => {
                 />
               </div>
 
-              <div className="w-full mb-6">
+              <div className="w-full mb-4">
                 <label className="block text-gray-300 font-semibold mb-2">
                   Password
                 </label>
-                <input
-                  type="password"
-                  placeholder="Enter your password"
-                  className="w-full px-4 py-3 bg-[#252b3d] border border-gray-700 rounded-lg text-gray-200 focus:border-[#7C3AED] focus:outline-none"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword}
+                    placeholder="Enter your password"
+                    className="w-full px-4 py-3 bg-[#252b3d] border border-gray-700 rounded-lg text-gray-200 focus:border-[#7C3AED] focus:outline-none"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="absolute cursor-pointer right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200 focus:outline-none"
+                    onClick={() =>
+                      setShowPassword(
+                        showPassword === "password" ? "text" : "password"
+                      )
+                    }
+                  >
+                    {password !== "" &&
+                      (showPassword === "password" ? (
+                        <FaEye size={18} />
+                      ) : (
+                        <FaEyeSlash size={18} />
+                      ))}
+                  </button>
+                </div>
                 <div className="flex justify-end mt-2">
                   <span className="text-sm text-gray-400 hover:text-[#7C3AED] cursor-pointer transition-colors">
                     Forgot password?
