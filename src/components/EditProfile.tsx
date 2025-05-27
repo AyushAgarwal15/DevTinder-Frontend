@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { BASE_URL } from "../utils/constants";
@@ -22,6 +22,7 @@ import {
   FaCloudUploadAlt,
   FaPlus,
   FaTimes,
+  FaSpinner,
 } from "react-icons/fa";
 
 // User interface that matches the app's structure
@@ -58,6 +59,9 @@ interface EditProfileProps {
   user: User | null;
 }
 
+const DEFAULT_AVATAR =
+  "https://res.cloudinary.com/devtinder/image/upload/v1/devtinder_profiles/default-avatar.png";
+
 const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
   const dispatch = useDispatch<AppDispatch>();
   const toast = useToast();
@@ -80,6 +84,8 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFormLoading, setIsFormLoading] = useState(true);
   const [isImageLoading, setIsImageLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (user) {
@@ -171,6 +177,51 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size should be less than 5MB");
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append("photo", file);
+
+      const response = await axios.post(
+        `${BASE_URL}/profile/upload-photo`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setFormData((prev) => ({
+        ...prev,
+        photoUrl: response.data.photoUrl,
+      }));
+      toast.success("Profile picture updated successfully!");
+    } catch (error: any) {
+      toast.error(error.response?.data || "Failed to upload image");
+      console.error("Error uploading image:", error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   return (
     <div className="max-w-3xl mx-auto">
       {isFormLoading ? (
@@ -183,41 +234,58 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
           onKeyDown={handleKeyDown}
           className="space-y-6"
         >
-          {/* Profile Photo */}
-          <div className="flex justify-center mb-8">
-            <div className="w-24 h-24 rounded-full bg-gray-700 border-2 border-[#7C3AED] overflow-hidden relative">
-              {isImageLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
-                  <Loader size="small" />
-                </div>
-              )}
-              <img
-                src={formData.photoUrl || "https://via.placeholder.com/150"}
-                alt="Profile"
-                className={`w-full h-full object-cover object-top ${
-                  isImageLoading ? "opacity-0" : "opacity-100"
-                } transition-opacity duration-300`}
-                onLoad={() => setIsImageLoading(false)}
-                onError={() => setIsImageLoading(false)}
-              />
-            </div>
-          </div>
-
+          {/* Photo Upload Section */}
           <div className="form-control mb-6">
             <label className="block text-gray-400 mb-2">
               <span className="flex items-center gap-2">
                 <FaCloudUploadAlt className="text-purple-400" />
-                Profile Photo URL
+                Profile Photo
               </span>
             </label>
-            <input
-              type="url"
-              name="photoUrl"
-              value={formData.photoUrl}
-              onChange={handleChange}
-              placeholder="Enter photo URL"
-              className="w-full px-4 py-3 bg-[#1c2030] border border-gray-700 rounded-lg text-gray-200 focus:border-[#7C3AED] focus:outline-none"
-            />
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-32 h-32 rounded-full bg-gray-700 border-2 border-[#7C3AED] overflow-hidden relative">
+                {isImageLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+                    <div className="w-8 h-8 border-4 border-t-transparent border-[#7C3AED] rounded-full animate-spin"></div>
+                  </div>
+                )}
+                <img
+                  src={formData.photoUrl || DEFAULT_AVATAR}
+                  alt="Profile"
+                  className={`w-full h-full object-cover object-center ${
+                    isImageLoading ? "opacity-0" : "opacity-100"
+                  } transition-opacity duration-300`}
+                  onLoad={() => setIsImageLoading(false)}
+                  onError={(e) => {
+                    setIsImageLoading(false);
+                    // If image fails to load, set to default avatar
+                    const target = e.target as HTMLImageElement;
+                    target.src = DEFAULT_AVATAR;
+                  }}
+                />
+                {isUploading && (
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <FaSpinner className="text-white text-2xl animate-spin" />
+                  </div>
+                )}
+              </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileUpload}
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="px-4 py-2 bg-[#252b3d] hover:bg-[#2f3649] text-gray-200 rounded-lg flex items-center gap-2 transition-colors"
+                disabled={isUploading}
+              >
+                <FaCloudUploadAlt />
+                {isUploading ? "Uploading..." : "Upload Photo"}
+              </button>
+            </div>
           </div>
 
           {/* Basic Info */}
