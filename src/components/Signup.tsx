@@ -213,11 +213,17 @@ const Signup: React.FC = () => {
           "This email is already registered. Please use a different email or login to your existing account.";
       } else if (err?.response?.status === 400) {
         errorMessage = "Please fill in all required fields correctly.";
+      } else if (err?.response?.data?.includes("buffering timed out after")) {
+        errorMessage =
+          "Server connection timed out. Please try again in a moment.";
+      } else if (err?.response?.data) {
+        // If we have a specific error message from the server, use it
+        errorMessage = err.response.data;
       }
 
       setError(errorMessage);
       toast.error(errorMessage);
-      console.error(err);
+      console.error("Signup error:", err?.response?.data || err.message);
     } finally {
       setIsLoading(false);
     }
