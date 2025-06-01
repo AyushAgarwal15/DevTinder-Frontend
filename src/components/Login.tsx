@@ -39,10 +39,7 @@ const Login: React.FC = () => {
   // Check if user is already authenticated
   useEffect(() => {
     const checkAuthStatus = async () => {
-      // Create an abort controller for the API request
       const controller = new AbortController();
-
-      // Set a timeout to abort the request after 5 seconds
       const timeoutId = setTimeout(() => {
         controller.abort();
         console.log("Auth check timed out");
@@ -53,7 +50,23 @@ const Login: React.FC = () => {
       try {
         setIsCheckingAuth(true);
 
-        // First check Redux store
+        // Check for GitHub auth errors in URL first
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get("error");
+        const errorMessage = urlParams.get("message");
+
+        if (error === "github_auth_failed") {
+          clearTimeout(timeoutId);
+          setIsCheckingAuth(false);
+          toast.error(
+            decodeURIComponent(errorMessage || "GitHub authentication failed")
+          );
+          // Clear the error from URL
+          window.history.replaceState({}, "", window.location.pathname);
+          return; // Stop further auth checks if there's a GitHub error
+        }
+
+        // Only proceed with auth checks if there's no GitHub error
         if (user) {
           clearTimeout(timeoutId);
           navigate("/");
@@ -87,16 +100,7 @@ const Login: React.FC = () => {
         }
       } catch (error) {
         clearTimeout(timeoutId);
-
-        // If aborted or 401 or any other error, user is not authenticated
-        if (error instanceof DOMException && error.name === "AbortError") {
-          console.log("Auth check aborted due to timeout");
-        } else {
-          console.log("User not authenticated, showing login page");
-        }
-
-        // Record the timestamp of this auth check
-        sessionStorage.setItem("lastAuthCheck", Date.now().toString());
+        console.error("Auth check error:", error);
       } finally {
         clearTimeout(timeoutId);
         setIsCheckingAuth(false);
@@ -104,7 +108,7 @@ const Login: React.FC = () => {
     };
 
     checkAuthStatus();
-  }, [dispatch, navigate, user]);
+  }, [dispatch, navigate, user, toast]);
 
   const fetchRequests = async (): Promise<void> => {
     try {

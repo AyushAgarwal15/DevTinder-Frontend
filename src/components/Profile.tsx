@@ -1,15 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import EditProfile from "./EditProfile";
 import UserCard from "./UserCard";
 import GitHubProfile from "./GitHubProfile";
 import { RootState } from "../utils/types";
 import { FaEye, FaEdit } from "react-icons/fa";
+import { useToast } from "../context/ToastContext";
 
 const Profile: React.FC = () => {
   const user = useSelector((store: RootState) => store.user);
   const [isEditing, setIsEditing] = useState(true);
   const [activeTab, setActiveTab] = useState<"profile" | "github">("profile");
+  const toast = useToast();
+
+  useEffect(() => {
+    // Check for GitHub connection errors
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get("error");
+    const errorMessage = urlParams.get("message");
+
+    if (error === "github_auth_failed") {
+      toast.error(
+        decodeURIComponent(errorMessage || "Failed to connect GitHub account")
+      );
+      // Clear the error from URL
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, [toast]);
 
   // Dummy handler for UserCard to satisfy its props requirement
   const handleProfileViewOnly = (_id: string, _action: string) => {

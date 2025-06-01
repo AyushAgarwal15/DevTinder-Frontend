@@ -5,6 +5,7 @@ import {
   FaTimes,
   FaExclamationTriangle,
   FaInfoCircle,
+  FaExclamationCircle,
 } from "react-icons/fa";
 
 interface ToastProps {
@@ -63,7 +64,7 @@ const Toast: React.FC<ToastProps> = ({
     },
     error: {
       bg: "bg-red-500",
-      icon: <FaTimes className="h-6 w-6" />,
+      icon: <FaExclamationCircle className="h-6 w-6" />,
     },
     warning: {
       bg: "bg-yellow-500",
